@@ -14,7 +14,7 @@ ct_array = []
 f = open("CT.txt", "w")
 def conv_time(time):
     hour, minute, second = time.split(":")
-    print(hour, minute, second)
+    # print(hour, minute, second)
     hour = int(float(hour) * 3600 * 1000)
     minute = int(float(minute) * 60 * 1000)
     second = int(float(second) * 1000)
@@ -37,9 +37,12 @@ for line in vtt:
     # print(line.end)
 
     for words in line.text.split():
-        ct_array[lineNumber][2].append(words)
-        ct_dictionary[words] += 1
-    lineNumber += 1
+        try: 
+            ct_array[lineNumber][2].append(words)
+            ct_dictionary[words] += 1
+        except:
+            KeyError("keyword error")
+        lineNumber += 1
 f.close()
 
 # for item in ct_array:
@@ -61,7 +64,7 @@ for cand in cands:
     with open(cand) as json_file:
         content = json.load(json_file)
         if content["displayOnPlayer"]:
-            print(content)
+            # print(content)
             suffix = content["captionId"]
             break
 active_file = file_name.split('-')[0] + "-" + suffix + "-captions.json"
@@ -71,7 +74,7 @@ with open(active_file) as json_file:
     content = json.load(json_file)
 content = list(content["objects"])
 
-dres_dictionary = defaultdict()
+dres_dictionary = defaultdict(int)
 dres_array = []
 
 lineNumber = 0
@@ -87,13 +90,31 @@ for lines in content:
         f.write(str(lines["endTime"]))
         f.write("\n")
         dres_array.append((str(lines["startTime"]), str(lines["endTime"]), []))
-        for words in lines["content"][0]["text"]:
-            dres_array[lineNumber][2].append(words)
-            dres_dictionary[words] += 1
+        for words in lines["content"][0]["text"].split():
+            try: 
+                # print("added")
+                dres_dictionary[words] += 1
+                dres_array[lineNumber][2].append(words)
+            except:
+                KeyError("keyword error")
         lineNumber += 1
 f.close()
-print("done")
+# print("done")
 
+# print(dres_dictionary)
+# print(ct_dictionary)
+
+def checkFreq():
+    errors = 0
+    for key, values in ct_dictionary.items():
+        if key in dres_dictionary:
+            # print("found")
+            errors += abs(dres_dictionary[key] - ct_dictionary[key])
+        else:
+            # print("not found")
+            errors += ct_dictionary[key]
+    total_words = sum(ct_dictionary.values())
+    return errors / total_words
 
 print(dres_dictionary)
 print(ct_dictionary)
