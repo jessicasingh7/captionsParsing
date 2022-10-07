@@ -9,5 +9,5 @@ for line in vtt:
     # print(line.text)
     for words in line.text.split():
         dictionary[words] += 1
-        
+
 print(list(sorted(dictionary.items(), key = lambda x: x[1], reverse = True))[:5])
