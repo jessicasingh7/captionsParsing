@@ -14,5 +14,6 @@ for file in files:
         metadata = json.load(json_file)
         if metadata["displayOnPlayer"] == True:
             captionsBeingDisplayed = file
-        
+
+captionsBeingDisplayed = captionsBeingDisplayed.replace("meta", "captions")     
 print(captionsBeingDisplayed)
