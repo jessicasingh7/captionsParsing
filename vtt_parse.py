@@ -11,12 +11,17 @@ file_name = "1_1x0b27pk-en_US.vtt"
 vtt = webvtt.read("1_1x0b27pk-en_US.vtt")
 dictionary = defaultdict(int)
 f = open("CT.txt", "w")
+def conv_time(time):
+    hour, minute, second = time.split(":")
+    print(hour, minute, second)
+    converted = second + minute * 60 + hour * 3600
+    return str(float(converted) * 1000)
 for line in vtt:
     f.write(line.text)
     f.write("\n")
-    f.write(line.start)
+    f.write(conv_time(line.start))
     f.write("\n")
-    f.write(line.end)
+    f.write(conv_time(line.end))
     f.write("\n")
     # print(line.text)
     # print(line.start)
