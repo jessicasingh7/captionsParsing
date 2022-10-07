@@ -31,7 +31,10 @@ for line in vtt:
     # print(line.start)
     # print(line.end)
     for words in line.text.split():
-        ct_dictionary[words] += 1
+        try: 
+            ct_dictionary[words] += 1
+        except:
+            KeyError("keyword error")
 f.close()
 #print(list(sorted(dictionary.items(), key = lambda x: x[1], reverse = True))[:5])
 
@@ -72,7 +75,10 @@ for lines in content:
         f.write(str(lines["endTime"]))
         f.write("\n")
         for words in lines["content"][0]["text"]:
-            dres_dictionary[words] += 1
+            try: 
+                dres_dictionary[words] += 1
+            except:
+                KeyError("keyword error")
 f.close()
 print("done")
 
