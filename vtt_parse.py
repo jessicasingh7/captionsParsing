@@ -9,12 +9,16 @@ file_name = "1_1x0b27pk-en_US.vtt"
 
 #Class Transcribe caption files
 vtt = webvtt.read("1_1x0b27pk-en_US.vtt")
-dictionary = defaultdict(int)
+ct_dictionary = defaultdict(int)
 f = open("CT.txt", "w")
 def conv_time(time):
     hour, minute, second = time.split(":")
     print(hour, minute, second)
-    converted = second + minute * 60 + hour * 3600
+    hour = int(hour * 3600 * 1000)
+    minute = int(minute * 60 * 1000)
+    second = int(second * 1000)
+    # print(hour, minute, second)
+    converted = second + minute + hour
     return str(float(converted) * 1000)
 for line in vtt:
     f.write(line.text)
@@ -27,7 +31,7 @@ for line in vtt:
     # print(line.start)
     # print(line.end)
     for words in line.text.split():
-        dictionary[words] += 1
+        ct_dictionary[words] += 1
 f.close()
 #print(list(sorted(dictionary.items(), key = lambda x: x[1], reverse = True))[:5])
 
@@ -53,8 +57,9 @@ f = open("../DRES.txt", "w")
 with open(active_file) as json_file:
     content = json.load(json_file)
 content = list(content["objects"])
-def convert_to_datetime(x):
-    datetime.datetime.fromtimestamp(x/1000.0)
+
+dres_dictionary = defaultdict()
+
 for lines in content:
     if("content" in lines):
         # print(lines["content"][0]["text"])
@@ -66,5 +71,10 @@ for lines in content:
         f.write("\n")
         f.write(str(lines["endTime"]))
         f.write("\n")
+        for words in lines["content"][0]["text"]:
+            dres_dictionary += 1
 f.close()
 print("done")
+
+def checkFreq():
+    
