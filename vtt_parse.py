@@ -10,6 +10,7 @@ file_name = "1_1x0b27pk-en_US.vtt"
 #Class Transcribe caption files
 vtt = webvtt.read("1_1x0b27pk-en_US.vtt")
 ct_dictionary = defaultdict(int)
+ct_array = []
 f = open("CT.txt", "w")
 def conv_time(time):
     hour, minute, second = time.split(":")
@@ -20,6 +21,8 @@ def conv_time(time):
     # print(hour, minute, second)
     converted = second + minute + hour
     return str(float(converted) * 1000)
+
+lineNumber = 0
 for line in vtt:
     f.write(line.text)
     f.write("\n")
@@ -27,12 +30,22 @@ for line in vtt:
     f.write("\n")
     f.write(conv_time(line.end))
     f.write("\n")
+
+    ct_array.append((conv_time(line.start), conv_time(line.end), []))
     # print(line.text)
     # print(line.start)
     # print(line.end)
+
     for words in line.text.split():
+        ct_array[lineNumber][2].append(words)
         ct_dictionary[words] += 1
+    lineNumber += 1
 f.close()
+
+# for item in ct_array:
+#     print(item[0], item[1])
+#     for word in item[2]:
+#         print(word)
 #print(list(sorted(dictionary.items(), key = lambda x: x[1], reverse = True))[:5])
 
 #Now comparing with DRES
@@ -59,7 +72,9 @@ with open(active_file) as json_file:
 content = list(content["objects"])
 
 dres_dictionary = defaultdict()
+dres_array = []
 
+lineNumber = 0
 for lines in content:
     if("content" in lines):
         # print(lines["content"][0]["text"])
@@ -71,8 +86,11 @@ for lines in content:
         f.write("\n")
         f.write(str(lines["endTime"]))
         f.write("\n")
+        dres_array.append((str(lines["startTime"]), str(lines["endTime"]), []))
         for words in lines["content"][0]["text"]:
+            dres_array[lineNumber][2].append(words)
             dres_dictionary[words] += 1
+        lineNumber += 1
 f.close()
 print("done")
 
