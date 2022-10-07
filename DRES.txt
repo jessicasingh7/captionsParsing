@@ -1,0 +1,1937 @@
+Okay.
+88840
+89229
+Well with that, let's
+talk about some review.
+89320
+92739
+So this is going to go fairly quick.
+94305
+97515
+It took about a half
+hour, um, last lecture.
+97515
+100215
+And I think that's about all there is to
+say, so we will start with, so, we covered
+100215
+117015
+everything up until single-source shortest
+path or, or the shortest path algorithm.
+117015
+121815
+So I've got today to talk about
+shortest path algorithms, um,
+121815
+127605
+flow, and finally bloom filters.
+127635
+130215
+The things that you
+have not been tested on.
+130245
+132195
+Everything else we've
+already talked about.
+132465
+133815
+As much as I'm going to though at
+the end, I'll be happy to stay and
+133815
+136965
+answer any questions people have.
+136965
+138525
+So first Dykstra's right.
+139395
+141015
+It's a wonderful algorithm.
+141045
+142545
+And it's fairly easy to understand.
+143865
+145545
+First of all, it was a very simple
+translation from prims, but fundamentally
+145575
+150825
+Dykstras algorithm seeks to find
+the shortest path from one source
+150825
+156135
+to all other points on the ground.
+156465
+157965
+Which sounds like a lot, but it
+does this very efficiently and
+159075
+163125
+it doesn't fish gently because it
+assumes that it is looked at all
+163125
+167505
+paths up to a certain distance.
+167505
+169905
+So it starts out when you pick the source,
+it has looked at all paths of length,
+170355
+175305
+zero, and everything else is infinitive.
+175325
+177795
+And it then says, okay, we're going
+to look at when we assess that zero
+178859
+183899
+path, we're going to look at all
+its neighbors and find the shortest
+183899
+187890
+path, including these new edges.
+187890
+190500
+Right.
+190500
+190859
+And so here we see it finds the 10
+and 12 distance, and then it says,
+191910
+196920
+oh, we're going to expand the 10.
+196950
+199799
+Right.
+200850
+201209
+Because that's the next shortest path.
+201239
+203339
+And then we're going to
+expand the 12 because.
+204600
+207060
+The distance here was 18 here.
+207825
+210165
+We're not showing the
+computing along the way.
+210165
+213675
+We're showing only the final
+points, but it's very efficient.
+213675
+218625
+What's wrong with it.
+218925
+219915
+Well, what's wrong with it
+is in its default state.
+220515
+225285
+It does not handle, um, negative weights.
+226335
+232305
+And when we talk about Dykstras in
+this class and in general, We mean
+232755
+237900
+Dykstras in its traditional form.
+237930
+239820
+So after I realized this won't
+work that way, because I can't
+241860
+247110
+write on these slides anyways.
+247110
+248820
+So what does Dykstra in its
+traditional form look like here it is.
+250800
+254640
+Right.
+254640
+254910
+And what we've changed is this little
+bit down here to change it from prims.
+254910
+259590
+And the little bit we changed was
+instead of looking at only the
+261180
+265560
+lightest edge and seeing if that is
+shorter, we look at the edge plus the
+265590
+272040
+distance to the start of that edge.
+272040
+274140
+Right.
+274140
+274620
+And so that is a total distance.
+275460
+277890
+And if it is shorter, we update the
+total distance and it's predecessor.
+278640
+284340
+With that we're finding the shortest path.
+286980
+289170
+And as I said, the key idea here
+is that paths that we're finding
+289170
+296039
+can only get longer, right.
+296340
+298080
+That we started looking at short paths.
+299159
+301380
+And since we are adding paths, as they get
+longer and we're adding the shortest path,
+301440
+309240
+we can find that goes to a new place.
+309240
+311940
+But that is longer than any other
+path we've seen or at least as
+313365
+316785
+long they can only get longer.
+316785
+319815
+And for that to be true, we cannot have
+negative edges because then this shortest
+320235
+324855
+path to somewhere could get shorter.
+324855
+326535
+Right.
+326535
+326955
+Whereas if to get anywhere, we
+first have to walk to the edge
+327465
+330405
+of our world and then walk more.
+330405
+332955
+It can only get longer.
+333135
+334365
+Okay.
+335745
+336255
+The other thing is to remember,
+this is how we have always
+338205
+341025
+written the pseudo code.
+341025
+341925
+But it's lines hiding something, isn't it.
+343200
+345539
+Right on line 20, it looks like
+we're updating an array, but we're
+345960
+350640
+updating a value that causes our
+priority queue to be updated.
+350640
+354300
+And so that's possibly
+taking a lot of work.
+355560
+357810
+If we use a traditional priority queue
+with updates, this is taking log and work.
+358830
+365849
+But if we use a Fibonacci heap, which
+we discussed, but didn't implement,
+367410
+373950
+it's only taking constant time because
+the Fibonacci heap has one special
+374880
+379380
+value, which I didn't remind you of
+when talking about, uh, spanning trees,
+379380
+385920
+but it has a special feature that it
+has a function that will decrease key.
+385950
+390990
+That is to say, increase the priority of.
+390990
+393960
+And it can do that change in
+constant time, making the key be
+395430
+400350
+lower priority that takes work, but
+making the key be higher priority
+400350
+405510
+that is to say, have a smaller value.
+405780
+408030
+We can do that efficiently.
+408390
+409770
+And with Dykstra is the only changes
+that ever happened is that the nodes
+410370
+415350
+that we have not yet visited, we find
+shorter and shorter paths for our right.
+415350
+420270
+They all started an infinity.
+420660
+421950
+And the only time they change
+is if we find something shorter.
+423239
+427590
+Okay.
+428760
+429150
+So that line 20 hides possibly a lot
+of work, but it, it could be managed
+431190
+442080
+by using the correct data structure.
+442080
+443820
+Um, I could go through
+running through the algorithm.
+444570
+449039
+But I think that seeing that the
+one time was good enough, right.
+449955
+454755
+We keep going through and
+adding the smallest node and
+454755
+457095
+adding the smallest node.
+457095
+458355
+And I will put a link
+to all these slides up.
+460065
+462525
+So you've got it.
+462525
+463265
+Um, so we, we, we ended up with a
+couple of things to review Ken Dykstras
+464865
+470715
+handle, uh, an undirected graph.
+471075
+474795
+We described it with a directed
+graph, but yeah, we can easily
+474795
+478575
+handle an undirected graph.
+478575
+480165
+We just treat it as if there
+is an edge in both directions.
+480465
+484575
+Right.
+484575
+485025
+So we update both ways, not a problem.
+485325
+487545
+Can it handle a negative cycle?
+491445
+493995
+Well, can any shortest path
+handle a negative cycle?
+494715
+498795
+No, cause it doesn't make sense, right?
+499485
+501585
+If there's a negative cycle in my
+graph, the shortest path to any
+502155
+507975
+place that can reach that negative
+cycle is go to the negative cycle.
+507975
+512955
+Do that as many times as you want.
+513585
+515684
+And then go to your destination.
+516195
+517215
+And you can always be shorter by
+going through the cycle one more time.
+518534
+523365
+So there is no shortest path, right?
+523965
+526694
+So that's important to remember
+that a shortest path is not defined.
+527505
+532064
+If we have a negative weight cycle,
+10 Dykstras do negative weight edges.
+532095
+537405
+I've already said.
+537885
+538425
+The default Dykstras cannot, but we did
+discuss a small change right in Dykstras.
+539145
+546345
+We know we will look at each vertex.
+546375
+549345
+We will add each vertex as the
+shortest elements once, right?
+550155
+554655
+Every time we go through our
+loop, we are adding one vertex.
+555315
+558645
+We'll do that for every vertex.
+559245
+560835
+When we're done, we will add
+it all the vertices and we've
+560835
+564075
+found the shortest path there.
+564075
+565175
+But we can simply change
+Dykstras in a very small way.
+566415
+570165
+We can say, when we add a vertex,
+that's, you know, the, the shortest
+570975
+575955
+vertex, we know a path to great.
+575955
+578175
+We process it just like normal and
+we update any vertex, even if we have
+578655
+584715
+already seen it with a path that shorter.
+584715
+589155
+If we do that, we run Intel.
+590995
+593485
+There are no vertices to visit
+until our priority queue is
+593515
+597355
+empty and then we're done.
+597355
+599575
+Cool.
+601045
+601825
+So that's a very small change,
+but it changes our analysis right?
+602935
+606625
+In the, in the CIC.
+607255
+608515
+Dykstra is the one that we talked about.
+608515
+610585
+The one that Dykstra defined
+you have this feature.
+610855
+614065
+That you will go through that loop.
+614850
+616620
+Exactly.
+616650
+617670
+As many times as their Virtus sees,
+because every time through the loop,
+617910
+621540
+you add one vortex and you will never
+revisit it with modified Dykstras.
+622260
+628770
+You have no such guarantee.
+629340
+630329
+And we did not do the analysis of
+modified Dykstras cause it isn't really
+631485
+635745
+important because fundamentally there
+are no better ways, but in general, um,
+635745
+645735
+with negative way to edges, there are
+lots of different things we can apply.
+645824
+649125
+Okay.
+650085
+650535
+So that's what I've got
+to say about Dykstras.
+651285
+653115
+Oh, yeah, I should running times.
+655694
+658755
+This is the one we talk about and
+log-in plus M that's the one that is
+658785
+663465
+known that requires a Fibonacci heap
+or a similar heap that has constant
+663465
+670215
+time reduce, uh, increased priority.
+670215
+674415
+If we do it with our basic data
+structure, we get em, log in.
+676515
+680535
+Okay.
+682574
+683055
+Last thing to say in this, that is
+not likely to really show up on the
+684465
+688785
+final, but wasn't big impact for people
+in the projects is if you're doing
+688785
+695265
+Dykstras, you have a real problem
+because the standard priority cues
+695265
+700425
+you're given don't actually have update.
+700425
+703695
+So the standard template library
+has a heap priority queue.
+703875
+707415
+That heap is the very one
+we implemented, right?
+707775
+710355
+Where we use an array.
+710655
+711525
+Well, what's the problem with that?
+713070
+714870
+The problem is that with an array,
+I don't know where my vertex is.
+716970
+722370
+Right.
+722370
+722760
+It's somewhere in the array.
+723210
+724980
+So to update it, I would have to
+potentially search the whole array.
+725610
+729360
+Um, we kind of tricked you because
+in the lab we had, you do updates.
+730320
+734010
+Right.
+734010
+734460
+But that's because we controlled exactly.
+734820
+736920
+We knew where things would be.
+737070
+738300
+And we just wanted you to see the idea.
+739800
+741840
+So if you could figure out the vertex
+you want to update, you can do updates
+742140
+746670
+of priority in log-in time, either by
+heat profile, upper heat puffy down, but
+746670
+752940
+the trick is how do you find the vertex?
+753000
+755130
+Well, if this is a feature you want
+to support in general, you then
+755400
+759750
+implement a priority queue using.
+759750
+761880
+Instead of using the array solution,
+it's very straightforward change.
+762885
+767025
+And then since the memory location
+storing any value in the priority
+767445
+773655
+queue, doesn't change just the
+pointers to its parents and children.
+773685
+779235
+It's fine.
+780345
+780975
+Everything works the same.
+781665
+782805
+The algorithms the same.
+782805
+784035
+We just have to play with
+pointers instead of array and.
+784035
+786875
+Okay, but that wasn't
+it for shortest path.
+788535
+792795
+We also talked about an algorithm,
+Flyod-Warshall I love this thing
+793635
+798045
+because you know, you can write
+this code in about 10 minutes.
+798045
+802635
+If you already have a graph, right.
+802635
+804645
+If someone else has provided
+you the graph implementation,
+804645
+807795
+implementing Flyod-Warshall.
+808065
+809825
+This practically drops in and becomes
+C plus, plus you can probably just
+811260
+816120
+copy this in, have the compiler scream
+at you and figure out what to debug.
+816120
+819990
+Right.
+819990
+820380
+When I was much younger, uh, some people.
+821670
+823740
+I knew took when there were lots of
+language programming classes, they took
+824564
+829185
+Fortran, COBOL, basic and C all at the
+same time, they had the same assignments.
+829185
+835365
+They wrote them in one language
+and then just debug them by
+835604
+838245
+dumping them into the others.
+838245
+839745
+Um, I don't recommend this in general,
+but when it's this straightforward,
+840525
+844995
+it's not that hard to, to convert.
+844995
+847665
+So why is it interesting?
+848714
+851025
+Well, first of all, Flyod-Warshall
+handily automatically by itself
+851745
+858645
+handles negative way to edges.
+858645
+859875
+That's nice.
+859905
+860625
+But it's also interesting in that
+it's the first in this class concrete
+861405
+866835
+example of dynamic programming, it's
+a dynamic programming algorithm.
+866835
+872745
+What do I mean by that?
+872745
+873735
+I mean, it builds in from on
+information of previous iteration.
+873795
+877545
+So the first time we go
+through this loop, right.
+878415
+882345
+We initialize the world and
+we know the shortest path from
+882705
+887985
+anywhere to anywhere that consists
+only of the start and the end.
+887985
+893715
+Right.
+894735
+895065
+That's exactly the cost of the edge.
+895965
+898575
+We're done.
+900510
+900990
+We we've solved that sub problem.
+901920
+904620
+Well, we go on with Flyod-Warshall
+and we now look through the path
+906150
+917370
+that includes the first value in our
+implementation in this case, a, so it
+917730
+926189
+includes the beginning of the year.
+926790
+928230
+In a, and we've now
+solved that sub problem.
+929280
+932700
+And we know those values.
+934170
+935520
+Those may be the shortest path.
+935550
+937110
+They'd be not, it isn't clear how
+it's being dynamic programming yet
+937140
+943230
+how it's building on sub problems.
+943230
+944910
+But then we look at the next
+one and here we're writing it
+946350
+953910
+as if it is the start, the end.
+953910
+956430
+And W_by.
+956430
+956820
+But in fact, it's solving all possible
+paths that are the start, the end
+958214
+964875
+and a, or B or a N B in between.
+965444
+969435
+Right?
+970395
+970785
+Because it computes well, what
+if I included being the path?
+970905
+977175
+Is it better?
+977265
+978165
+If so, let's do it.
+978975
+980985
+Otherwise we'll stick
+with something we had.
+981464
+984314
+We already had the shortest path.
+984555
+986385
+Nothing of nothing in a now
+we say, well, what about B?
+987959
+994110
+But this be implicitly includes
+a path to be involving.
+994680
+1001300
+And implicitly includes a
+path from B involving a.
+1002420
+1007670
+So we now have found that, and
+we could think of this tripling
+1009140
+1014420
+nested loop as a huge recurrence.
+1014420
+1016220
+Right where we would say recursively,
+we want to find the shortest path.
+1017345
+1021935
+We'll our recursion would look for
+shortest path missing one thing
+1022145
+1025655
+and go down the base of that.
+1026075
+1028655
+And we would have the shortest
+path involving nothing,
+1029105
+1031925
+but the start and the end.
+1031925
+1033065
+And then one up we would have involving a
+involving B involving C involving D right.
+1033454
+1040865
+All of those are already computed and
+we built up and we build up and we
+1042125
+1047525
+build up and the trick is we don't need
+extra space because we only care about
+1047525
+1053525
+keeping track of the shortest one.
+1053525
+1055355
+Right?
+1056075
+1056285
+We don't need all of the
+possible sub problems.
+1056285
+1059045
+We only need the shortest
+sub problem solution.
+1059345
+1062405
+We've found between the start and the.
+1062405
+1064595
+Okay.
+1067190
+1067639
+So I think that's really cool.
+1068600
+1070010
+It's a nice algorithm.
+1070550
+1071960
+Why do we like it?
+1072560
+1073610
+Well, if we compare it
+to Dykstras, it's iffy.
+1074629
+1079820
+What I like, man, it's so much easier to
+code than Dykstras and your time matters.
+1080690
+1086990
+If I really need all the points.
+1089000
+1091160
+Is it better than dextrous?
+1093755
+1095015
+Not quite in less by graph
+has a lot of edges, right?
+1095345
+1100115
+Because Dykstras has this term here that
+is, um, cares about the edges, the M term.
+1100445
+1109145
+And if that term is large, as in the
+number of edges are on the order of
+1109475
+1115295
+N squared, then oh, That's N squared
+and in a concrete, actual application,
+1115295
+1125630
+it has another disadvantage.
+1126050
+1127610
+Arrays are nice compact data
+structures going through an array
+1128540
+1132470
+in a nice predictable manner
+is good for cache performance.
+1132770
+1137420
+Dykstra is, is just,
+it's touching everything.
+1137780
+1140360
+It's hopping around.
+1140360
+1141380
+It's going, hey, I'm only going to do
+the work I need to do and that's great.
+1141380
+1145760
+Except for, if the computer is already
+getting all of the work, you don't need
+1147004
+1151145
+to do it, doesn't really help you as much.
+1151145
+1154145
+So caches make Flyod-Warshall
+happy, and Dykstra is sad.
+1155870
+1162230
+And finally, of course, Flyod-Warshall
+automatically handles negative edges.
+1163070
+1168620
+If we read two Dykstras with
+negative edges, our problem becomes
+1169190
+1174800
+that loop bound is possibly worth.
+1175310
+1178580
+And everything gets bad because the
+loop bound of M ends up over here that
+1179735
+1186845
+every edge could potentially update
+the thing and could return the vertex.
+1186845
+1192575
+So, okay.
+1193235
+1195545
+So if we need a negative
+way to edges, it's useful.
+1197075
+1199865
+And if we need to, um, deal with large
+things with a lot of edges, Okay.
+1200165
+1208730
+That's what we did for shortest path.
+1209330
+1210950
+Neither are terribly hard.
+1212330
+1214010
+Both are I think, fairly easy to
+understand Flyod-Warshall I think
+1214700
+1219260
+is trivial to understand the code,
+really wrapping your head around the
+1219260
+1223760
+concept is a little bit more channel.
+1223760
+1225500
+That's okay.
+1227270
+1227810
+So then we talked about
+network flow, right?
+1229340
+1232610
+And we said, okay, look, I spent
+one day sort of working through
+1232610
+1236960
+the algorithm and then a bunch of
+time working through the proof.
+1236960
+1240470
+And the answer is, well, you
+don't have to remember the proofs.
+1241100
+1243620
+That's nice from a test point of view,
+but I thought it was kind of interesting
+1243650
+1248210
+and getting comfortable with the ideas
+and the proof will help you in three 70.
+1249050
+1252470
+Not cause they're going to do
+the same thing, but they're going
+1253805
+1255575
+to do similar kinds of ideas.
+1255575
+1257495
+So the flow problem of max flow is
+trying to solve what is the flow
+1258545
+1265085
+from one vertex in a graph that's
+traditionally directed to another.
+1265085
+1270935
+Okay.
+1271925
+1272495
+We call that a flow network.
+1273754
+1275465
+The first thing we do is we need to
+talk about what is the flow on a.
+1276305
+1280595
+Well, here we have the path,
+a, B, C F what's the flow.
+1282034
+1286865
+Let's do it.
+1289044
+1289524
+We can, we can figure
+out the flow of ABCF.
+1289554
+1291985
+Yeah, it's three, right?
+1294054
+1295375
+Because the flow, the most material
+or water or whatever I can pro
+1296185
+1301824
+put through those connections is
+equal to the smallest choke point.
+1301885
+1306235
+If I try to put four in, sorry,
+it goes here, it goes here.
+1307190
+1310580
+Then it goes and get stopped.
+1310580
+1313310
+So we get three and D F we get D E
+F we get seven, or I think that was
+1314540
+1323180
+actually supposed to be a D E F.
+1323180
+1326330
+Oh, no, it was.
+1328670
+1329600
+To get five.
+1334399
+1335090
+It must have been replacing
+CF with Def forgive me.
+1335090
+1340490
+I'm using slides that have been done
+by TAs for review in past semesters.
+1340879
+1344810
+So again, we can compute that pretty cool.
+1345770
+1351139
+And then how do we compute the flow?
+1352730
+1354409
+We kept picking Paris.
+1354409
+1355669
+Until we, there were no more paths, right.
+1356689
+1359239
+We computed the flow in this worked great.
+1359760
+1362750
+And we could look at these things
+and say, huh, let's see this one.
+1362810
+1366620
+It was, um,
+1366620
+1369649
+I think we got, uh, look,
+yeah, we got 10 and we got 20.
+1374179
+1383479
+I did it right in my head.
+1384935
+1385955
+Okay.
+1387514
+1388024
+And our choke points end up being C F
+and D E over here are choke points are
+1389945
+1398345
+well, either a, B and a C or B, D and C
+D, but there was a problem here, right?
+1398375
+1409415
+When we looked at this second graph.
+1410315
+1411965
+It could make bad choices, right.
+1413150
+1414860
+That I could choose, Hey, I'm
+going to pick a random flow.
+1416570
+1419420
+And the first flow I'm
+going to pick is a, B, C, D.
+1419630
+1423500
+Right.
+1424490
+1424850
+And so I flow five units, but
+I've consumed five of this.
+1425840
+1431480
+And that means I can only because
+the path a C has no other.
+1432500
+1437470
+Exit to get to D the path
+they see can only flow five
+1438320
+1443510
+and that's reduced the total.
+1444380
+1445820
+We can flow out of the origin.
+1445820
+1447260
+Right?
+1448640
+1448970
+So how do we fix it?
+1449360
+1450500
+Well, the first thing we did was we
+said, Hey, let's do something fancier.
+1450650
+1457310
+Instead of removing flows from
+the graph, when we remove a flow.
+1457340
+1461690
+We're going to add a
+backwards flow, right?
+1462889
+1465110
+Which is a way of letting the
+algorithm kind of undo its mistake.
+1465949
+1469639
+We said, if we have a backwards
+flow, we can just eat each, keep
+1470340
+1475310
+adding flows that will happen is
+that backwards flow will get on gone.
+1475340
+1479600
+So when we floated from a to B and B
+to C and C to D, we said, now the edge
+1479870
+1485899
+BC is all used up, but there's an edge.
+1485899
+1489860
+C B with a capacity of five and that
+edge can be used to undo the mistake.
+1490895
+1500075
+Okay.
+1501365
+1501785
+So that's cool.
+1503315
+1504245
+But it takes time.
+1505055
+1506255
+We showed that as long as we
+have integers, it ends because
+1506405
+1510335
+every time we run a flow,
+we've increased the total flow.
+1510395
+1514265
+And within the jurors, after
+a certain number of integers,
+1515435
+1518135
+we'll get to any fixed them.
+1518135
+1519305
+And since the flow is going to
+be a fixed value, that was cool.
+1520399
+1523550
+But then we said, Hey, we
+could do something better.
+1524870
+1528620
+We could be smarter about
+how we pick our edges.
+1528680
+1532639
+Right.
+1532639
+1533000
+And there were two ways
+we could be smarter.
+1534320
+1536450
+We could pick edges that
+were the largest path.
+1537530
+1541550
+Right.
+1541580
+1541940
+So if we flowed the most
+possible, for example, here we go.
+1542180
+1545780
+A B, D or ACD, but we could not pick
+a, B, C, D both of those, because
+1546560
+1554120
+both of those two are larger.
+1554120
+1555500
+They're 10 versus five that it would work.
+1555500
+1558590
+And we wouldn't have to
+worry about the backwards.
+1558590
+1560360
+We still need the backwards because
+there's much more complicated graphs.
+1561350
+1565580
+They'll still need the
+backwards, but it's more.
+1565580
+1567110
+We said, oh, okay.
+1568610
+1569750
+That's one, but it's a little complicated
+to figure out the largest path, right.
+1569750
+1574790
+We said, oh, another thing we
+could do is just choose the
+1575360
+1578540
+shortest path in number of edges.
+1578540
+1580760
+And again, that would
+allow a, B, D and ACD.
+1581300
+1585650
+And then that was what our
+whole proof was, was showing.
+1586700
+1589580
+That's actually really good.
+1589880
+1591410
+That is an algorithm that guarantees
+things converge very quickly.
+1591920
+1596210
+We don't care about the details,
+but understanding that those two
+1597215
+1600905
+choices as heuristics, instead of
+picking a completely random path,
+1600905
+1605375
+greatly improve the algorithm,
+things that would not picking the
+1605945
+1609665
+path with the largest single edge.
+1609665
+1613985
+It's not necessarily good, right?
+1615185
+1616564
+The path a, B, C, D has an edge of 10.
+1617705
+1622054
+Picking a path with the longest
+path, clearly bad, et cetera.
+1623750
+1630650
+Okay.
+1631550
+1631940
+So that's really all we had to do on flow.
+1632930
+1634910
+That's the only amount I want
+you to understand is sort of
+1635060
+1637820
+how to run the basic algorithm.
+1637820
+1639590
+Why back edges are there, how they're
+used to fix things and what are
+1640100
+1645710
+good heuristics for path choice.
+1645710
+1647420
+That's the only thing that we
+could ask about, um, if final.
+1648230
+1651379
+And finally Brad talked
+about bloom filters.
+1653900
+1656600
+Bloom filters are super cool and it's
+the first time we've covered them.
+1656750
+1660980
+So bloom filters really want to use very
+little space to store a huge amount of
+1662810
+1668480
+data, and they also want to be very fast.
+1668480
+1671510
+And so their idea is kind of.
+1672290
+1673850
+Let's have a hash table, but instead
+of storing all those values and
+1675200
+1680000
+things, we're just going to store,
+is there something here or not?
+1680000
+1684230
+Right.
+1684410
+1684860
+So what we're storing either,
+there's something here or there
+1685520
+1689210
+is not, so it's true or false.
+1689210
+1691250
+And when we insert, we go to every
+hash value, we take our data and
+1692180
+1699650
+we hash it and we send it to.
+1699650
+1701390
+If it's zero, it goes to one.
+1702635
+1704045
+If it's one, it goes to one, right?
+1704045
+1705665
+Uh, we cannot remove from a basic
+bloom filter because we have no way
+1707105
+1712265
+of knowing if that being is that
+hash value is set to one because we
+1712265
+1718625
+inserted the thing that we want to
+remove, or we inserted something else.
+1718625
+1722555
+Okay.
+1723785
+1724295
+So one of the promise, when we look at a
+data structure, answering a question, a
+1726725
+1734915
+data structure has four possible outcomes
+to an answer of a question, right?
+1734915
+1738725
+It can say, yes, this thing is true.
+1739205
+1741605
+Here's the answer.
+1741725
+1742715
+No, it is false.
+1743345
+1746195
+And we are correct.
+1747034
+1748085
+It could accidentally say, sure, I've
+got that information and be completely.
+1749254
+1753745
+Or it could stay that doesn't
+exist and be completely wrong.
+1755435
+1760265
+Right?
+1760295
+1760745
+These are the four things we can
+have happen if our data structure
+1761075
+1764735
+is not a hundred percent correct,
+which is the case of bloom filters.
+1764735
+1769085
+Right.
+1769085
+1769355
+They can be wrong, but one of these
+bloom filters can not, what is it that
+1769355
+1776855
+cannot be true from a bloom filter?
+1776915
+1778775
+Yeah.
+1781564
+1782074
+A bloom filter cannot have a false
+negative that if I've inserted something,
+1782135
+1787534
+it is definitely got a one on it.
+1788615
+1790865
+Right.
+1791014
+1791465
+If I have not inserted it, it might
+have a zero, but something else
+1792274
+1798455
+might have hashed to that value.
+1798455
+1800284
+So we might say, yeah, that's
+here, but we cannot have it not be.
+1800764
+1805685
+So with that information, we said,
+Hey, can we make bloom filters
+1807545
+1811265
+a little bit more accurate?
+1811265
+1812375
+And instead of using one hash value, we're
+going to use multiple hash values, right?
+1813425
+1820205
+We're going to hash the thing that we want
+to put in, or check in the bloom, filter
+1820835
+1825935
+with several different hash functions and
+we'll check all those locations on insert.
+1826535
+1832985
+We will set them all to work.
+1832985
+1834185
+And on search checking.
+1835235
+1836885
+If it's there, we will
+look at all of them.
+1836885
+1839345
+If any of them are zero, the answer
+is no, it's not here, but if they're
+1839945
+1844295
+all one, the answer is yes, and this
+improves our performance in general.
+1844295
+1852515
+And it's basically banking on this idea
+that it can't have a false negative.
+1852905
+1859655
+Okay.
+1861440
+1861980
+So this kind of come in comprehensible
+function, which you don't have to memorize
+1863180
+1870110
+describes the chances, assuming Sue ha.
+1870710
+1874879
+But what's interesting about it.
+1875270
+1876860
+What's interesting.
+1877940
+1878930
+Right?
+1878930
+1879170
+We have the M M is the size of our vector.
+1879170
+1885490
+We're storing our bloom filter.
+1885550
+1886879
+K is the number of hash functions and
+N is the number of things we insert.
+1888080
+1894649
+Right.
+1894680
+1895010
+And what's interesting.
+1896270
+1897260
+Here is K both makes
+this bigger and smaller.
+1897260
+1902540
+So as I use more and more hash functions,
+I get more and more accurate until
+1903710
+1911240
+kind of I'm filling in the whole table.
+1911240
+1913040
+If I have a hundred hash functions
+in a table with only 10 locations,
+1913820
+1919550
+I'm just going to color.
+1919970
+1920600
+The whole table is true.
+1920600
+1922190
+The first thing I insert and now
+I'm almost always having false
+1922460
+1927740
+negatives or false positives, right.
+1927740
+1930020
+Because everything's gonna
+say, yeah, it's there.
+1930380
+1931670
+No problem.
+1931670
+1932330
+But if I only have one hash function, I
+can end up with the chance of having a.
+1933650
+1942020
+Uh, positive is exactly one over
+the size of the table, right?
+1943370
+1948320
+Because I assume my hash functions
+are . So there's this curve we get.
+1948530
+1953630
+And what does this mean?
+1954770
+1955820
+This means that we reduce that
+complicated mask to this optimal point.
+1956840
+1962960
+You don't actually have to memorize this
+function either, but you should remember
+1964190
+1967370
+sort of what's going on with it, that
+this optimal points as that for a given
+1967370
+1974450
+number of keys and a given size of table,
+we have a optimal number of insertions
+1974450
+1982940
+for an expected number of insertions
+in a expected at a given size of table.
+1983480
+1988580
+We have an optimal number of hashtags.
+1988700
+1990800
+For a given number of et cetera, so
+we can solve for any two of these.
+1991970
+1996830
+We can figure out the
+best choice of the third.
+1996830
+1999170
+Cool.
+2000070
+2000520
+So when designing your hash function, your
+bloom filters, you want to base on this?
+2002080
+2006640
+Okay.
+2007210
+2007720
+Finally, we talked about one
+improvement over a classical bloom
+2010270
+2014050
+filter, which was accounting bloom.
+2014050
+2016300
+In accounting, bloom filter.
+2018010
+2019419
+We want to be able to ask how many
+different things did we see, or how many
+2019419
+2024310
+things of this type did we see right.
+2024310
+2026230
+Of this set of things.
+2027370
+2029230
+And this gives us some features.
+2029889
+2032530
+This says that instead of storing true
+or false we'll store account, right,
+2032980
+2038500
+this makes it use more space, but.
+2039010
+2042730
+It makes it mean that we have an idea
+of how many different things we saw.
+2044485
+2049344
+Okay.
+2050605
+2051114
+That seems useful.
+2051295
+2052554
+It also allows us to
+kind of remove, right.
+2054505
+2059065
+It's not perfect, but we now have
+a way of removing because all we're
+2059514
+2064645
+going to do is decrement the count.
+2064645
+2066355
+If we have put two things in
+that collage, And we decrement
+2066594
+2070659
+and we remove one of them.
+2070659
+2071799
+We detriment account by one and
+that's a reasonable approximation.
+2071799
+2076029
+Unfortunately, we then no
+longer have the promise that
+2077109
+2082029
+we cannot have false negatives.
+2082029
+2083949
+So there's a trade off and it
+depends on your application design.
+2084790
+2088569
+What do you want to do there?
+2088569
+2090129
+Isn't a right answer here.
+2090129
+2091540
+Right?
+2091659
+2092080
+We can decide one thing or the other.
+2092739
+2095020
+But it gives us a useful feature
+and that's it for what we're
+2096925
+2101065
+going to cover on bloom filters.
+2101065
+2102655
+We're not going to cover,
+um, the sketch stuff.
+2103465
+2106675
+We felt that there was a little bit
+too much probability and we didn't
+2107335
+2110275
+give enough background to test that.
+2110275
+2112075
+But even with this, it's a
+cool application that has
+2112945
+2116125
+some really interesting ideas.
+2116125
+2117325
+So I'm gonna put, as I said, I'll put
+this link up, but the last thing I want
+2119080
+2122770
+to play is wa-, this little bit that a
+past TA did that, um, I think is amazing.
+2122770
+2134290
+He was a grad student when I
+was still a grad student, so.
+2139150
+2141310
+Pens up finals coming soon.
+2144100
+2147895
+One third of your entire
+grade, it's really important.
+2148044
+2152575
+We are here to help you study.
+2152665
+2155064
+So let's go over hashing
+for a center rate.
+2155365
+2158484
+The hash function H determine is false.
+2158725
+2162834
+So should it be bold?
+2162855
+2163944
+Well, one, you should remember Sue hall
+2163944
+2167274
+on this drug.
+2170665
+2171444
+But that isn't all you need
+to have a way to handle calls.
+2174355
+2179245
+One, two, can you attach
+it to the same spot?
+2180475
+2183235
+if you resign must rehash.
+2193525
+2195925
+Our towns may not go to the same
+place that they were before.
+2196165
+2199975
+And max is caching.
+2201340
+2203230
+Let's move on.
+2203260
+2204310
+okay.
+2212680
+2212860
+So keeps the priority since
+our dad move on, log in.
+2214090
+2218560
+Time from routine on needs
+are always increasing.
+2218560
+2223630
+There are up on log-in
+and warning his own.
+2223960
+2228700
+So make sure how, you know,  this joint
+sets also on to being on your exam.
+2229570
+2239800
+So let's see
+2239800
+2241030
+merge if they are not enough.
+2245650
+2247820
+So the can a union by height,
+you can be union biases.
+2249010
+2256450
+You deal with writes three fish
+and sea will be a maximize.
+2257575
+2261745
+You should use path compression.
+2261985
+2263895
+It gets to what the cons then
+time your tree gets shorter
+2263905
+2268465
+with every single call to fine.
+2268465
+2271375
+Just like that.
+2271915
+2272965
+Meda maze  just joined,
+said send all your MPS.
+2273145
+2277495
+They, therefore we have
+moving on to graphs.
+2277965
+2292355
+Maybe the most banning trees answer
+questions about way to wrap, like
+2302345
+2306895
+these kids get their own swimming pool.
+2307524
+2309955
+You can use cross school, the endorphins.
+2311045
+2313345
+It doesn't matter which one, they
+both three eight, the tree was small.
+2313345
+2318265
+This total way.
+2318265
+2320005
+You'd better know the difference
+between R, b and D Fs and which
+2320785
+2326515
+implementation will do a chalk graph,
+the bats adjacency matrix store list,
+2326515
+2332995
+which one will make your girlfriend the
+fastest without any tricks, which is.
+2333145
+2339145
+My stuff, if you want the shortest path
+from , you know, like [unintelligible]
+2340480
+2349520
+all that you would need to get this
+tree is to have all your graph edges.
+2350190
+2354410
+Just be a way to pause this
+and leave that so alive.
+2354430
+2360100
+Good luck on your exam.
+2361630
+2363279

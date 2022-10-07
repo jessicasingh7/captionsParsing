@@ -1,0 +1,2640 @@
+Together
+00:00:52.860
+00:00:53.720
+And maybe we'll come back.
+00:00:59.690
+00:01:02.170
+I guess there is no.
+00:01:07.930
+00:01:09.580
+It's the final down.
+00:01:21.890
+00:01:23.960
+With that
+00:01:28.830
+00:01:30.330
+Let's talk about some review.
+00:01:31.000
+00:01:32.780
+So.
+00:01:34.310
+00:01:35.210
+This is going to go fairly quick.
+00:01:35.960
+00:01:37.550
+It took about 1/2 hour last lecture and
+00:01:37.550
+00:01:40.360
+I think that's about all there is to
+00:01:40.360
+00:01:41.609
+say.
+00:01:41.610
+00:01:42.190
+So.
+00:01:43.960
+00:01:44.760
+We will start with.
+00:01:46.020
+00:01:47.550
+So.
+00:01:53.720
+00:01:54.320
+We covered everything up until single
+00:01:56.250
+00:01:59.140
+source shortest path or the shortest
+00:01:59.140
+00:02:01.130
+path algorithm.
+00:02:01.130
+00:02:01.860
+So I've got today to talk about
+00:02:01.860
+00:02:04.436
+shortest path algorithms on flow and
+00:02:04.436
+00:02:09.070
+finally bloom filters.
+00:02:09.070
+00:02:10.280
+The things that you have not been
+00:02:10.280
+00:02:11.580
+tested on.
+00:02:11.580
+00:02:12.440
+Everything else we've already talked
+00:02:12.440
+00:02:13.596
+about as much as I'm going to though at
+00:02:13.596
+00:02:15.615
+the end I'll be happy to stay and
+00:02:15.615
+00:02:17.030
+answer any questions people have.
+00:02:17.030
+00:02:18.520
+So first Dykstra is right.
+00:02:19.390
+00:02:21.090
+It's a wonderful algorithm.
+00:02:21.090
+00:02:22.960
+And it's fairly easy to understand.
+00:02:23.840
+00:02:25.630
+First of all, it was a very simple
+00:02:25.630
+00:02:27.450
+translation from PRIMS, but
+00:02:27.450
+00:02:30.120
+fundamentally Dijkstra's algorithm
+00:02:30.120
+00:02:31.930
+seeks to find the shortest path from
+00:02:31.930
+00:02:35.280
+one source to all other points on the
+00:02:35.280
+00:02:37.910
+graph, which sounds like a lot, but it
+00:02:37.910
+00:02:40.610
+does this very efficiently and it
+00:02:40.610
+00:02:43.320
+doesn't efficiently because it assumes
+00:02:43.320
+00:02:45.750
+that it is looked at all paths up to a
+00:02:45.750
+00:02:48.700
+certain distance.
+00:02:48.700
+00:02:50.320
+So it starts out when you pick the
+00:02:50.320
+00:02:52.803
+source that has looked at all paths.
+00:02:52.803
+00:02:54.870
+Of length zero and everything else is
+00:02:54.940
+00:02:57.410
+Infinity.
+00:02:57.410
+00:02:58.080
+And it then says, OK, we're going to
+00:02:58.840
+00:03:01.430
+look at when we process that zero path.
+00:03:01.430
+00:03:04.270
+We're going to look at all its
+00:03:04.270
+00:03:05.850
+neighbors and find the shortest path,
+00:03:05.850
+00:03:08.860
+including these new edges, right?
+00:03:08.860
+00:03:10.950
+And so here we see it finds the 10 and
+00:03:11.840
+00:03:14.985
+12 distance.
+00:03:14.985
+00:03:15.970
+And then it says we're going to expand
+00:03:15.970
+00:03:18.410
+the 10.
+00:03:18.410
+00:03:19.850
+Right, because that's the next shortest
+00:03:20.870
+00:03:22.840
+path.
+00:03:22.840
+00:03:23.320
+And then we're going to expand the 12,
+00:03:24.550
+00:03:26.690
+because the distance here was 18 here,
+00:03:26.690
+00:03:30.010
+we're not showing the computing along
+00:03:30.010
+00:03:33.175
+the way.
+00:03:33.175
+00:03:33.720
+We're showing only the final points,
+00:03:33.720
+00:03:37.370
+but it's very efficient.
+00:03:37.370
+00:03:38.514
+What's wrong with it?
+00:03:38.514
+00:03:40.732
+What's wrong with it is in its default
+00:03:40.732
+00:03:44.840
+state.
+00:03:44.840
+00:03:45.715
+It does not handle.
+00:03:45.715
+00:03:47.920
+Negative weights and when we talk about
+00:03:51.260
+00:03:54.036
+Dijkstra's in this class and in general
+00:03:54.036
+00:03:56.670
+we mean dykstra's in its traditional
+00:03:56.670
+00:03:59.540
+form.
+00:03:59.540
+00:03:59.980
+So.
+00:04:01.910
+00:04:02.810
+After I realized this won't work that
+00:04:03.580
+00:04:05.750
+way, they can't write on these slides
+00:04:05.750
+00:04:08.130
+anyways.
+00:04:08.130
+00:04:08.850
+So what does Dykstra in its traditional
+00:04:10.800
+00:04:12.770
+form look like?
+00:04:12.770
+00:04:13.825
+Here it is right?
+00:04:13.825
+00:04:14.910
+And what we've changed this little bit
+00:04:14.910
+00:04:16.570
+down here.
+00:04:16.570
+00:04:17.370
+To change it from prims?
+00:04:18.300
+00:04:19.780
+And the little bit we changed was
+00:04:21.130
+00:04:22.900
+instead of looking at only the lightest
+00:04:22.900
+00:04:26.260
+edge and seeing if that is shorter.
+00:04:26.260
+00:04:29.080
+We look at the edge plus the distance
+00:04:30.080
+00:04:32.720
+to the start of that edge, right?
+00:04:32.720
+00:04:34.640
+And so that is a total distance and if
+00:04:34.640
+00:04:39.230
+it is shorter we update the total
+00:04:39.230
+00:04:41.960
+distance and.
+00:04:41.960
+00:04:42.990
+Its predecessor
+00:04:43.750
+00:04:44.700
+With that, we're finding the shortest
+00:04:47.010
+00:04:48.810
+path, and as I said, the key idea here
+00:04:48.810
+00:04:51.560
+is that.
+00:04:51.560
+00:04:52.560
+Paths that we're finding can only get
+00:04:53.380
+00:04:57.170
+longer, right?
+00:04:57.170
+00:04:58.140
+That we started looking at short paths
+00:04:59.160
+00:05:01.303
+and since we are adding paths as they
+00:05:01.303
+00:05:04.800
+get longer and we're adding the
+00:05:04.800
+00:05:08.130
+shortest path we can find that goes to
+00:05:08.130
+00:05:11.200
+a new place.
+00:05:11.200
+00:05:12.070
+But that is longer than any other path
+00:05:13.390
+00:05:15.360
+we've seen, or at least as long.
+00:05:15.360
+00:05:17.280
+They can only get longer, and for that
+00:05:18.420
+00:05:20.715
+to be true we cannot have negative
+00:05:20.715
+00:05:22.640
+edges because then this shortest path
+00:05:22.640
+00:05:25.210
+to somewhere could get shorter right?
+00:05:25.210
+00:05:27.470
+Whereas to get anywhere we first have
+00:05:27.470
+00:05:29.545
+to walk to the edge of our world and
+00:05:29.545
+00:05:31.733
+then walk more.
+00:05:31.733
+00:05:33.030
+It can only get longer.
+00:05:33.030
+00:05:34.410
+OK.
+00:05:35.770
+00:05:36.300
+The other thing is to remember this is
+00:05:38.210
+00:05:40.290
+how we have always written the
+00:05:40.290
+00:05:41.490
+pseudocode.
+00:05:41.490
+00:05:42.440
+But these lines hiding something, isn't
+00:05:43.190
+00:05:45.400
+it right?
+00:05:45.400
+00:05:46.420
+On line 20, it looks like we're
+00:05:46.420
+00:05:48.060
+updating an array.
+00:05:48.060
+00:05:49.100
+But we're updating a value that causes
+00:05:50.280
+00:05:52.490
+our priority queue to be updated, and
+00:05:52.490
+00:05:55.760
+so that's possibly taking a lot of
+00:05:55.760
+00:05:57.420
+work.
+00:05:57.420
+00:05:57.930
+If we use a traditional priority queue
+00:05:58.830
+00:06:02.890
+with updates, this is taking log N work
+00:06:02.890
+00:06:05.970
+right.
+00:06:05.970
+00:06:06.340
+But if we use a Fibonacci heap, which
+00:06:07.430
+00:06:10.990
+we discussed but didn't implement.
+00:06:10.990
+00:06:13.960
+It's only taking constant time because
+00:06:14.890
+00:06:17.490
+the Fibonacci heap has one special
+00:06:17.490
+00:06:19.440
+value, which I didn't remind you of
+00:06:19.440
+00:06:22.270
+when talking about.
+00:06:22.270
+00:06:23.540
+Or spanning trees, but it has the
+00:06:24.640
+00:06:26.520
+special feature that.
+00:06:26.520
+00:06:27.940
+It has a function that will decrease
+00:06:28.560
+00:06:30.480
+key.
+00:06:30.480
+00:06:30.870
+That is to say increase the priority of
+00:06:30.870
+00:06:33.990
+a key.
+00:06:33.990
+00:06:34.590
+And they can do that change in constant
+00:06:35.390
+00:06:38.010
+time.
+00:06:38.010
+00:06:38.460
+Making the key be lower priority.
+00:06:39.360
+00:06:41.325
+That takes work, but making the key be
+00:06:41.325
+00:06:44.380
+higher priority.
+00:06:44.380
+00:06:45.286
+That is to say, have a smaller value.
+00:06:45.286
+00:06:48.070
+We can do that efficiently and with
+00:06:48.070
+00:06:50.770
+Dykstra.
+00:06:50.770
+00:06:51.140
+The only changes that ever happened is
+00:06:51.140
+00:06:53.790
+that the nodes that we have not yet
+00:06:53.790
+00:06:56.360
+visited we find shorter and shorter
+00:06:56.360
+00:06:59.159
+paths for right.
+00:06:59.160
+00:07:00.270
+They all started it Infinity.
+00:07:00.270
+00:07:02.370
+And the only time they change is if we
+00:07:03.200
+00:07:06.520
+find something shorter.
+00:07:06.520
+00:07:07.610
+OK.
+00:07:08.790
+00:07:09.210
+So.
+00:07:11.170
+00:07:12.120
+That line 20 hides possibly a lot of
+00:07:14.960
+00:07:18.130
+work.
+00:07:18.130
+00:07:18.590
+But it could be managed by using the
+00:07:19.260
+00:07:22.680
+correct data structure.
+00:07:22.680
+00:07:23.970
+I could go through running through the
+00:07:26.510
+00:07:28.310
+algorithm, but I think that seeing that
+00:07:28.310
+00:07:32.135
+the one time was good enough right, we
+00:07:32.135
+00:07:34.940
+keep going through and adding the
+00:07:34.940
+00:07:36.553
+smallest node and adding the smallest
+00:07:36.553
+00:07:38.119
+node.
+00:07:38.119
+00:07:38.379
+And I will put a link to all these
+00:07:40.030
+00:07:41.890
+slides up so you've got it.
+00:07:41.890
+00:07:43.470
+So we end up with a couple of things to
+00:07:46.870
+00:07:49.160
+review.
+00:07:49.160
+00:07:49.530
+Ken Dykstra's handle.
+00:07:49.530
+00:07:52.170
+An undirected graph.
+00:07:53.520
+00:07:54.637
+We described it with a directed graph.
+00:07:54.637
+00:07:57.310
+But yeah, we can easily handle an
+00:07:57.310
+00:07:59.427
+undirected graph.
+00:07:59.427
+00:08:00.282
+We just treat it as if there is an edge
+00:08:00.282
+00:08:03.580
+in both directions, right?
+00:08:03.580
+00:08:05.310
+So we update both ways, not a problem.
+00:08:05.310
+00:08:07.570
+Can it handle a negative cycle well?
+00:08:11.440
+00:08:15.300
+Can any shortest path handle a negative
+00:08:16.010
+00:08:18.390
+cycle?
+00:08:18.390
+00:08:18.760
+No, because it doesn't make sense
+00:08:19.520
+00:08:21.210
+right?
+00:08:21.210
+00:08:22.080
+If there's a negative cycle in my
+00:08:22.080
+00:08:23.890
+graph.
+00:08:23.890
+00:08:24.580
+The shortest path to any place that can
+00:08:25.980
+00:08:28.910
+reach that negative cycle is go to the
+00:08:28.910
+00:08:32.242
+negative cycle.
+00:08:32.242
+00:08:32.850
+Do that as many times as you want and
+00:08:33.600
+00:08:36.340
+then go to your destination.
+00:08:36.340
+00:08:37.650
+And you can always be shorter by going
+00:08:38.480
+00:08:41.680
+through the cycle one more time, so
+00:08:41.680
+00:08:44.220
+there is no shortest path, right?
+00:08:44.220
+00:08:46.710
+So that's important to remember that as
+00:08:47.460
+00:08:49.140
+shortest path is not defined.
+00:08:49.140
+00:08:52.130
+If we have a negative weight cycle, can
+00:08:52.130
+00:08:54.805
+dykstra's do negative weight edges?
+00:08:54.805
+00:08:57.390
+I've already said the default digesters
+00:08:57.390
+00:09:00.510
+cannot, but we did discuss a small
+00:09:00.510
+00:09:03.850
+change right in dykstra's.
+00:09:03.850
+00:09:06.143
+We know we will look at each vertex.
+00:09:06.143
+00:09:09.370
+We will add each vertex as the shortest
+00:09:10.140
+00:09:12.860
+element once right, every time we go
+00:09:12.860
+00:09:16.250
+through our loop, we are adding one
+00:09:16.250
+00:09:17.890
+vertex.
+00:09:17.890
+00:09:19.240
+We'll do that for every vertex.
+00:09:19.240
+00:09:20.880
+When we're done, we will add it all the
+00:09:20.880
+00:09:23.120
+vertices and we found the shortest path
+00:09:23.120
+00:09:25.090
+to everywhere.
+00:09:25.090
+00:09:25.640
+But we can simply change Dijkstra's in
+00:09:26.420
+00:09:28.810
+a very small way.
+00:09:28.810
+00:09:30.220
+We can say when we add a vertex that's
+00:09:30.970
+00:09:34.760
+the shortest vertex, we know a path to
+00:09:34.760
+00:09:37.790
+great.
+00:09:37.790
+00:09:38.320
+We process it just and we update any
+00:09:38.320
+00:09:43.315
+vertex, even if we have already seen
+00:09:43.315
+00:09:45.720
+it.
+00:09:45.720
+00:09:46.040
+With a path that's shorter.
+00:09:46.910
+00:09:49.470
+If we do that, we run Intel.
+00:09:50.970
+00:09:53.550
+There are no vertices to visit until
+00:09:53.550
+00:09:56.300
+our priority queue is empty.
+00:09:56.300
+00:09:57.920
+And then we're done.
+00:09:58.700
+00:09:59.750
+Cool.
+00:10:01.040
+00:10:01.690
+So that's a very small change, but it
+00:10:02.940
+00:10:04.870
+changes our analysis right in the sick
+00:10:04.870
+00:10:08.570
+dykers the one that we talked about,
+00:10:08.570
+00:10:10.760
+the one that Dykstra defined you have
+00:10:10.760
+00:10:13.630
+this feature that you will go through
+00:10:13.630
+00:10:16.055
+that loop exactly as many times as
+00:10:16.055
+00:10:18.810
+their vertices, because every time
+00:10:18.810
+00:10:20.720
+through the loop.
+00:10:20.720
+00:10:21.479
+You add 1 vertex and you will never
+00:10:22.280
+00:10:25.620
+revisit it.
+00:10:25.620
+00:10:26.430
+With modified Dijkstra's, you have no
+00:10:27.160
+00:10:29.880
+such guarantee and we did not do the
+00:10:29.880
+00:10:32.800
+analysis of modified Dijkstra's because
+00:10:32.800
+00:10:35.220
+it isn't really important because
+00:10:35.220
+00:10:37.820
+fundamentally there are no better ways
+00:10:37.820
+00:10:43.080
+but in general.
+00:10:43.080
+00:10:44.490
+This negative weight edges there are
+00:10:46.080
+00:10:47.400
+lots of different things we can apply.
+00:10:47.400
+00:10:49.190
+OK, so that's what I've got to say
+00:10:50.110
+00:10:52.320
+about digesters.
+00:10:52.320
+00:10:53.180
+Yeah I should.
+00:10:55.710
+00:10:56.440
+Running times, this is the one we talk
+00:10:57.850
+00:11:00.010
+about N log N + M.
+00:11:00.010
+00:11:02.200
+That's the one that is known that
+00:11:02.200
+00:11:05.100
+requires a Fibonacci heap or a similar
+00:11:05.100
+00:11:07.780
+heap that has constant time reduce
+00:11:07.780
+00:11:13.190
+increased priority.
+00:11:13.190
+00:11:14.440
+If we do it with our basic data
+00:11:16.500
+00:11:18.200
+structure, we get M log N.
+00:11:18.200
+00:11:20.590
+OK.
+00:11:22.610
+00:11:23.030
+Last thing to say in this that is not
+00:11:24.460
+00:11:27.550
+likely to really show up on the final
+00:11:27.550
+00:11:29.270
+but wasn't big impact for people in the
+00:11:29.270
+00:11:32.020
+projects is.
+00:11:32.020
+00:11:33.560
+If you're doing dykstra's, you have a
+00:11:34.610
+00:11:36.380
+real problem.
+00:11:36.380
+00:11:37.470
+Because the standard priority queues
+00:11:38.130
+00:11:40.480
+you're given.
+00:11:40.480
+00:11:41.220
+Don't actually have update, so the
+00:11:42.150
+00:11:44.350
+standard template library has a heap
+00:11:44.350
+00:11:46.490
+priority queue.
+00:11:46.490
+00:11:47.790
+That heap is the very one we
+00:11:47.790
+00:11:49.410
+implemented right where we use an
+00:11:49.410
+00:11:51.360
+array.
+00:11:51.360
+00:11:51.920
+What's the problem with that?
+00:11:53.090
+00:11:54.960
+The problem.
+00:11:56.980
+00:11:57.920
+Is that with an array?
+00:11:58.890
+00:11:59.775
+I don't know where my vertex is right?
+00:11:59.775
+00:12:02.820
+It's somewhere in the array, so to
+00:12:02.820
+00:12:06.230
+update it I would have to potentially
+00:12:06.230
+00:12:08.240
+search the whole array.
+00:12:08.240
+00:12:09.380
+We kind of tricked you because in the
+00:12:10.580
+00:12:12.440
+lab we had you do updates right?
+00:12:12.440
+00:12:14.470
+But that's because we controlled
+00:12:14.470
+00:12:16.370
+exactly.
+00:12:16.370
+00:12:16.845
+We knew where things would be.
+00:12:16.845
+00:12:18.760
+And we just wanted you to see the idea,
+00:12:19.790
+00:12:21.900
+O, if you could figure out the vertex
+00:12:21.900
+00:12:23.900
+you want to update, you can do updates
+00:12:23.900
+00:12:26.720
+of priority in log N time either by
+00:12:26.720
+00:12:29.600
+heapify or heapify down.
+00:12:29.600
+00:12:31.320
+But the trick is, how do you find the
+00:12:32.520
+00:12:34.510
+vertex?
+00:12:34.510
+00:12:35.150
+Well, if this is a feature you want to
+00:12:35.150
+00:12:37.720
+support in general, you then implement
+00:12:37.720
+00:12:40.270
+a priority queue using pointers instead
+00:12:40.270
+00:12:43.270
+of using the array solution.
+00:12:43.270
+00:12:44.860
+It's very straightforward change, and
+00:12:44.860
+00:12:47.687
+then since the memory location storing
+00:12:47.687
+00:12:51.970
+any value in the priority queue doesn't
+00:12:51.970
+00:12:54.310
+change, just the pointers to its
+00:12:54.310
+00:12:57.760
+parents and children.
+00:12:57.760
+00:12:59.250
+It's fine.
+00:13:00.350
+00:13:01.030
+Everything works the same, the
+00:13:01.680
+00:13:03.000
+algorithms the same, we just have to
+00:13:03.000
+00:13:04.640
+play with pointers instead of array
+00:13:04.640
+00:13:06.780
+indexing.
+00:13:06.780
+00:13:07.360
+OK.
+00:13:08.560
+00:13:08.950
+But that wasn't it for shortest paths.
+00:13:10.750
+00:13:13.630
+We also talked about an algorithm.
+00:13:13.630
+00:13:15.510
+Floyd warshall.
+00:13:15.510
+00:13:17.010
+I love this thing because you can write
+00:13:17.010
+00:13:20.545
+this code in about 10 minutes if you
+00:13:20.545
+00:13:22.920
+already have a graph, right?
+00:13:22.920
+00:13:24.680
+If someone else has provided you the
+00:13:24.680
+00:13:26.500
+graph implementation implementing Floyd
+00:13:26.500
+00:13:29.166
+Warshall.
+00:13:29.166
+00:13:29.819
+This practically drops in and becomes
+00:13:31.300
+00:13:34.050
+C.
+00:13:34.050
+00:13:34.715
+You could probably just copy this in.
+00:13:34.715
+00:13:37.200
+Have the compiler scream at you and
+00:13:37.200
+00:13:38.880
+figure out what the debug right when I
+00:13:38.880
+00:13:41.979
+was much younger.
+00:13:41.980
+00:13:42.930
+Some people I knew took when there were
+00:13:42.930
+00:13:46.460
+lots of language programming classes.
+00:13:46.460
+00:13:48.393
+They took Fortran, COBOL, basic and see
+00:13:48.393
+00:13:52.540
+all at the same time they had the same
+00:13:52.540
+00:13:54.700
+assignments.
+00:13:54.700
+00:13:55.410
+They wrote them in one language and
+00:13:55.410
+00:13:57.170
+then just debugged them by dumping them
+00:13:57.170
+00:13:58.840
+into the others.
+00:13:58.840
+00:13:59.730
+We don't recommend this in general, but
+00:14:01.150
+00:14:03.790
+straightforward.
+00:14:03.790
+00:14:04.505
+It's not that hard to convert.
+00:14:04.505
+00:14:07.910
+So why is it interesting?
+00:14:08.680
+00:14:11.060
+First of all.
+00:14:11.750
+00:14:13.860
+Floyd Warshall
+00:14:14.530
+00:14:15.720
+Handily automatically by itself,
+00:14:16.420
+00:14:18.690
+handles negative weight edges, that's
+00:14:18.690
+00:14:20.190
+nice.
+00:14:20.190
+00:14:20.650
+But it's also interesting in that.
+00:14:21.560
+00:14:23.810
+It's the first in this class concrete
+00:14:24.690
+00:14:26.880
+example of dynamic programming.
+00:14:26.880
+00:14:29.090
+It's a dynamic programming algorithm.
+00:14:30.940
+00:14:32.780
+What do I mean by that?
+00:14:32.780
+00:14:33.800
+I mean, it builds in from on
+00:14:33.800
+00:14:35.870
+information of previous iterations, so
+00:14:35.870
+00:14:38.750
+the first time we go through this loop
+00:14:38.750
+00:14:41.940
+right, we initialize the world and we
+00:14:41.940
+00:14:45.510
+know the shortest path from anywhere to
+00:14:45.510
+00:14:49.110
+anywhere that consists only of the
+00:14:49.110
+00:14:52.699
+start and the end.
+00:14:52.700
+00:14:53.850
+Right?
+00:14:54.740
+00:14:55.130
+That's exactly the cost of the edges.
+00:14:55.970
+00:14:58.960
+We're done.
+00:15:00.480
+00:15:01.070
+We've we've solved that sub problem.
+00:15:01.070
+00:15:04.620
+We go on with Floyd Warshall.
+00:15:06.170
+00:15:08.480
+And.
+00:15:09.440
+00:15:10.190
+We now look through.
+00:15:11.160
+00:15:14.090
+The path that includes.
+00:15:15.600
+00:15:19.030
+The first value in our implementation.
+00:15:20.020
+00:15:23.010
+In this case a.
+00:15:24.170
+00:15:25.730
+So it includes the beginning of the end
+00:15:25.730
+00:15:28.720
+in A and we've now solved that sub
+00:15:28.720
+00:15:32.210
+problem.
+00:15:32.210
+00:15:32.850
+And we know those values.
+00:15:34.130
+00:15:35.560
+Those may be the shortest path, they
+00:15:35.560
+00:15:37.500
+may not.
+00:15:37.500
+00:15:38.140
+It isn't clear how it's being dynamic
+00:15:39.680
+00:15:42.520
+programming yet, how it's building on
+00:15:42.520
+00:15:43.980
+sub problems.
+00:15:43.980
+00:15:44.890
+But then.
+00:15:46.420
+00:15:47.310
+We look at the next one, and here we're
+00:15:49.530
+00:15:53.210
+writing it as if it is the start, the
+00:15:53.210
+00:15:56.110
+end and B.
+00:15:56.110
+00:15:57.310
+But in fact it's solving all possible
+00:15:58.230
+00:16:02.220
+paths that are the start the end and A
+00:16:02.220
+00:16:06.034
+or B or A&amp;B in between.
+00:16:06.034
+00:16:09.480
+Right, because it computes, what if I
+00:16:10.400
+00:16:15.680
+included be in the path?
+00:16:15.680
+00:16:17.230
+Is it better?
+00:16:17.230
+00:16:18.170
+If so, let's do it.
+00:16:18.970
+00:16:21.450
+Otherwise, we'll stick with something
+00:16:21.450
+00:16:23.680
+we had.
+00:16:23.680
+00:16:24.446
+We already had the shortest path of.
+00:16:24.446
+00:16:27.140
+Nothing of nothing in a now we say,
+00:16:27.970
+00:16:32.600
+well, what about B?
+00:16:32.600
+00:16:34.690
+But this B implicitly includes a path
+00:16:34.690
+00:16:39.309
+to B involving A and implicitly
+00:16:39.310
+00:16:43.317
+includes a path from B involving a.
+00:16:43.317
+00:16:47.719
+So we now have found that and we could
+00:16:49.160
+00:16:53.290
+think of this triply nested loop as a
+00:16:53.290
+00:16:55.430
+huge recursion.
+00:16:55.430
+00:16:56.680
+Right where we would say recursively we
+00:16:57.370
+00:17:00.450
+want to find the shortest path.
+00:17:00.450
+00:17:02.090
+Our recursion would look for shortest
+00:17:02.090
+00:17:04.170
+paths missing one thing and go down.
+00:17:04.170
+00:17:06.960
+The base of that recursion we would
+00:17:07.750
+00:17:09.462
+have the shortest path involving
+00:17:09.462
+00:17:11.570
+nothing but the start and the end, and
+00:17:11.570
+00:17:13.660
+then one up we would have involving a
+00:17:13.660
+00:17:16.720
+involving B involving C involving D
+00:17:16.720
+00:17:20.620
+right?
+00:17:20.620
+00:17:21.130
+All of those are already computed, and
+00:17:22.120
+00:17:24.455
+we build up and we build up and we
+00:17:24.455
+00:17:27.388
+build up.
+00:17:27.388
+00:17:28.039
+And the trick is we don't need extra
+00:17:28.970
+00:17:30.700
+space because we only care about
+00:17:30.700
+00:17:33.540
+keeping track of the shortest one.
+00:17:33.540
+00:17:35.360
+Right, we don't need all of the
+00:17:36.080
+00:17:37.540
+possible sub problems.
+00:17:37.540
+00:17:39.130
+We only need the shortest sub problem
+00:17:39.130
+00:17:41.850
+solution we found between the start and
+00:17:41.850
+00:17:44.625
+the end.
+00:17:44.625
+00:17:45.050
+So I think that's really cool.
+00:17:47.200
+00:17:49.990
+It's a nice algorithm.
+00:17:49.990
+00:17:52.290
+Why do we like it?
+00:17:52.290
+00:17:53.690
+If we compare it to dykstra's.
+00:17:54.640
+00:17:57.830
+It's iffy what I like man, it's so much
+00:17:59.340
+00:18:02.850
+easier to code than diestrus.
+00:18:02.850
+00:18:04.290
+And your time matters.
+00:18:05.240
+00:18:07.070
+If I really need all the points.
+00:18:09.030
+00:18:11.480
+Is it better than dykstra's?
+00:18:13.750
+00:18:15.330
+Not quite.
+00:18:15.330
+00:18:16.340
+By graph has a lot of edges right?
+00:18:17.130
+00:18:20.200
+Because Dijkstra's has this term here.
+00:18:20.200
+00:18:23.250
+That is.
+00:18:24.370
+00:18:25.260
+There's about the edges, the M term,
+00:18:26.830
+00:18:29.460
+and if that term is large, as in the
+00:18:29.460
+00:18:32.530
+number of edges are on the order of N
+00:18:32.530
+00:18:35.570
+squared, then.
+00:18:35.570
+00:18:37.570
+Oh
+00:18:38.490
+00:18:38.870
+That's north squared.
+00:18:39.820
+00:18:40.950
+And in a concrete actual application,
+00:18:42.410
+00:18:45.700
+it has another disadvantage.
+00:18:45.700
+00:18:47.660
+Arrays are nice compact data
+00:18:48.530
+00:18:50.510
+structures, and going through an array
+00:18:50.510
+00:18:52.660
+in a nice, predictable manner is good
+00:18:52.660
+00:18:56.080
+for cash performance.
+00:18:56.080
+00:18:57.810
+Dykstra is just it's touching
+00:18:57.810
+00:19:00.040
+everything.
+00:19:00.040
+00:19:00.335
+It's hopping around.
+00:19:00.335
+00:19:01.233
+It's going.
+00:19:01.233
+00:19:01.779
+Hey, I'm only going to do the work I
+00:19:01.780
+00:19:03.540
+need to do, and that's great.
+00:19:03.540
+00:19:06.120
+Except for if the computer is already
+00:19:07.030
+00:19:09.360
+getting all of the work, you don't need
+00:19:09.360
+00:19:11.190
+to do.
+00:19:11.190
+00:19:11.720
+It doesn't really help you as much.
+00:19:12.490
+00:19:14.280
+So cash is make Floyd Warshall happy
+00:19:15.880
+00:19:20.200
+and dykstra's sad.
+00:19:20.200
+00:19:22.370
+And finally of course.
+00:19:22.370
+00:19:24.550
+Floyd Warshall automatically handles
+00:19:25.180
+00:19:27.480
+negative edges if we redo dykstra's
+00:19:27.480
+00:19:31.570
+with negative edges are problem becomes
+00:19:31.570
+00:19:34.820
+that loop bound is possibly worse.
+00:19:34.820
+00:19:39.010
+And everything gets bad because the
+00:19:39.720
+00:19:42.480
+loop bound of M ends up over here.
+00:19:42.480
+00:19:45.390
+That every edge could potentially
+00:19:46.570
+00:19:48.740
+update the thing and could return the
+00:19:48.740
+00:19:51.810
+vertex.
+00:19:51.810
+00:19:52.560
+So OK.
+00:19:53.240
+00:19:55.610
+So if we need negative weight edges,
+00:19:57.060
+00:19:59.050
+it's useful, and if we need.
+00:19:59.050
+00:20:01.170
+You deal with large things with a lot
+00:20:02.380
+00:20:06.100
+of edges, it's useful.
+00:20:06.100
+00:20:07.260
+OK, that's what we did for shortest
+00:20:08.360
+00:20:10.480
+path.
+00:20:10.480
+00:20:11.010
+Neither are terribly hard, both are, I
+00:20:12.330
+00:20:15.490
+think, fairly easy to understand.
+00:20:15.490
+00:20:17.380
+Floyd Warshall I think is trivial to
+00:20:18.090
+00:20:20.170
+understand the code.
+00:20:20.170
+00:20:21.430
+Really, wrapping your head around the
+00:20:22.220
+00:20:23.870
+concept is a little bit more
+00:20:23.870
+00:20:25.330
+challenging.
+00:20:25.330
+00:20:25.980
+That's OK.
+00:20:27.240
+00:20:27.850
+So then we talked about network flow.
+00:20:29.290
+00:20:31.180
+Right and we said OK, look.
+00:20:32.280
+00:20:34.760
+It's spent one day sort of working
+00:20:34.760
+00:20:36.775
+through the algorithm and then a bunch
+00:20:36.775
+00:20:38.770
+of time working through the proof.
+00:20:38.770
+00:20:40.460
+And the answer is you don't have to
+00:20:41.080
+00:20:42.940
+remember the proof, so that's nice from
+00:20:42.940
+00:20:45.300
+a test point of view, but I thought it
+00:20:45.300
+00:20:47.220
+was kind of interesting and getting
+00:20:47.220
+00:20:49.650
+comfortable with the ideas and the
+00:20:49.650
+00:20:51.183
+proof will help you in 374.
+00:20:51.183
+00:20:53.010
+Not because they going to do the same
+00:20:53.810
+00:20:55.070
+thing, but they're going to do similar
+00:20:55.070
+00:20:56.400
+kinds of ideas so.
+00:20:56.400
+00:20:59.200
+Flow problem of Max flow is trying to
+00:21:00.570
+00:21:03.030
+solve what is the flow from 1 vertex in
+00:21:03.030
+00:21:07.610
+a graph that's traditionally directed
+00:21:07.610
+00:21:09.910
+to another?
+00:21:09.910
+00:21:10.900
+OK, we call that a flow network.
+00:21:11.960
+00:21:15.470
+The first thing we do is we need to
+00:21:16.340
+00:21:18.460
+talk about what is the flow on a path.
+00:21:18.460
+00:21:21.250
+Here we have the path AB, CF.
+00:21:22.040
+00:21:25.150
+What's the flow?
+00:21:25.970
+00:21:26.900
+Let's do we can figure out the flow of
+00:21:29.060
+00:21:31.080
+a BCF.
+00:21:31.080
+00:21:31.960
+It's 3, right?
+00:21:34.040
+00:21:35.450
+Because the flow, the most material or
+00:21:36.210
+00:21:40.130
+water or whatever I can put through
+00:21:40.130
+00:21:42.460
+those connections is equal to the
+00:21:42.460
+00:21:44.990
+smallest choke point, right?
+00:21:44.990
+00:21:47.190
+If I try to put four in, sure it goes.
+00:21:47.190
+00:21:49.710
+Here it goes here and then it goes.
+00:21:49.710
+00:21:51.019
+And get stopped.
+00:21:52.480
+00:21:53.390
+So we get three and DEF.
+00:21:54.520
+00:21:57.002
+We get def.
+00:21:57.002
+00:21:59.060
+We get 7 or I think that was actually
+00:21:59.810
+00:22:03.570
+supposed to be a DF.
+00:22:03.570
+00:22:06.520
+No, it was.
+00:22:08.670
+00:22:09.660
+To get five, it must have been
+00:22:14.430
+00:22:15.990
+replacing CF with DEF.
+00:22:15.990
+00:22:19.930
+Forgive me.
+00:22:19.930
+00:22:20.890
+I'm using slides that have been done by
+00:22:20.890
+00:22:22.905
+TA's for review in past semesters, so
+00:22:22.905
+00:22:26.210
+again, we can compute that.
+00:22:26.210
+00:22:28.870
+Pretty cool.
+00:22:30.060
+00:22:31.050
+And then how did we compute the flow?
+00:22:32.720
+00:22:34.453
+We kept picking paths until we there
+00:22:34.453
+00:22:37.840
+were no more paths, right?
+00:22:37.840
+00:22:39.430
+We computed the flow and this works
+00:22:39.430
+00:22:42.390
+great and we could look at these things
+00:22:42.390
+00:22:44.190
+and say let's see this one, it was.
+00:22:44.190
+00:22:47.770
+I think we got.
+00:22:54.220
+00:22:55.350
+Look
+00:22:58.640
+00:22:59.230
+We got 10.
+00:23:00.670
+00:23:01.860
+And we got 20.
+00:23:02.720
+00:23:03.770
+I did it right in my head.
+00:23:04.930
+00:23:06.090
+OK.
+00:23:07.540
+00:23:08.230
+And our choke points end up being CF.
+00:23:09.890
+00:23:13.550
+And DE.
+00:23:14.200
+00:23:15.230
+Over here, our choke points are well
+00:23:16.370
+00:23:19.230
+either AB and AC.
+00:23:19.230
+00:23:21.420
+Or BD and CD.
+00:23:22.340
+00:23:25.330
+But there was a problem here, right
+00:23:27.500
+00:23:30.300
+when we looked at this second graph, it
+00:23:30.300
+00:23:33.300
+could make bad choices, right?
+00:23:33.300
+00:23:34.990
+That I could choose.
+00:23:36.550
+00:23:37.820
+Hey, I'm gonna pick a random flow and
+00:23:37.820
+00:23:39.830
+the first flow I'm gonna pick is ABCD.
+00:23:39.830
+00:23:43.540
+Right, and so I flow 5 units.
+00:23:44.490
+00:23:47.600
+But I've consumed 5 of this.
+00:23:48.430
+00:23:51.450
+And that means I can only because the
+00:23:52.470
+00:23:55.356
+path AC has no other exit to get to D
+00:23:55.356
+00:24:00.640
+the path AC can only flow 5 and that's
+00:24:00.640
+00:24:04.800
+reduced the total we can flow out of
+00:24:04.800
+00:24:06.755
+the origin.
+00:24:06.755
+00:24:07.320
+Right, so how did we fix it?
+00:24:08.630
+00:24:10.670
+Well?
+00:24:10.670
+00:24:11.240
+The first thing we did was we said,
+00:24:12.000
+00:24:14.060
+hey.
+00:24:14.060
+00:24:14.540
+Let's do something fancier.
+00:24:15.630
+00:24:17.320
+Instead of removing flows from the
+00:24:17.320
+00:24:19.500
+graph when we remove a flow, we're
+00:24:19.500
+00:24:23.120
+going to add a backwards flow, right?
+00:24:23.120
+00:24:25.230
+Which is a way of letting the algorithm
+00:24:25.230
+00:24:27.980
+kind of undo its mistake.
+00:24:27.980
+00:24:29.640
+We said if we have a backwards flow, we
+00:24:30.340
+00:24:33.340
+can just each keep adding flows that
+00:24:33.340
+00:24:36.336
+will happen is that backwards flow will
+00:24:36.336
+00:24:38.960
+get undone O when we flowed from A to
+00:24:38.960
+00:24:41.897
+B&amp;B to C&amp;C to D we said now.
+00:24:41.897
+00:24:44.640
+The Edge BC is all used up, but there's
+00:24:45.390
+00:24:49.420
+an edge.
+00:24:49.420
+00:24:50.160
+CB with a capacity of five.
+00:24:50.950
+00:24:54.810
+And that edge can be used to undo the
+00:24:56.160
+00:24:59.460
+mistake.
+00:24:59.460
+00:25:00.100
+OK.
+00:25:01.370
+00:25:01.790
+So that's cool.
+00:25:03.260
+00:25:04.260
+But it takes time.
+00:25:05.040
+00:25:06.205
+We showed that as long as we have
+00:25:06.205
+00:25:07.999
+integers, it ends because every time we
+00:25:08.000
+00:25:11.300
+run a flow we have increased the total
+00:25:11.300
+00:25:13.830
+flow.
+00:25:13.830
+00:25:14.250
+And with integers after a certain
+00:25:15.400
+00:25:17.370
+number of integers, we'll get to any
+00:25:17.370
+00:25:18.910
+fixed integer.
+00:25:18.910
+00:25:19.850
+And since flow is going to be a fixed
+00:25:19.850
+00:25:21.960
+value, that was cool.
+00:25:21.960
+00:25:23.510
+But then we said, hey.
+00:25:24.860
+00:25:26.190
+We could do something better.
+00:25:27.100
+00:25:28.590
+We could be smarter.
+00:25:28.590
+00:25:30.210
+About how we pick our edges right?
+00:25:31.120
+00:25:33.050
+And there were two ways we could be
+00:25:34.320
+00:25:35.890
+smarter.
+00:25:35.890
+00:25:36.450
+We could pick edges that were the
+00:25:37.560
+00:25:40.300
+largest path, right?
+00:25:40.300
+00:25:42.110
+So if we flowed, the most possible for
+00:25:42.110
+00:25:44.810
+example here, we could pick a BD or a
+00:25:44.810
+00:25:48.820
+CD, but we could not pick a BCD.
+00:25:48.820
+00:25:52.290
+Both of them, because both of those two
+00:25:53.170
+00:25:54.950
+are larger.
+00:25:54.950
+00:25:55.550
+They're 10 versus 5.
+00:25:55.550
+00:25:57.110
+Then it would work and we wouldn't have
+00:25:57.820
+00:25:59.210
+to worry about the backwards.
+00:25:59.210
+00:26:00.430
+We still need the backwards because
+00:26:01.360
+00:26:02.930
+there's much more complicated graphs
+00:26:02.930
+00:26:05.600
+you'll still need the backwards, but
+00:26:05.600
+00:26:06.830
+it's more efficient.
+00:26:06.830
+00:26:07.750
+We said, OK, that's one, but it's a
+00:26:08.610
+00:26:11.530
+little complicated to figure out the
+00:26:11.530
+00:26:13.240
+largest path, right?
+00:26:13.240
+00:26:14.860
+We said another thing we could do is
+00:26:14.860
+00:26:17.720
+just choose the shortest path and
+00:26:17.720
+00:26:19.750
+number of edges, and again that would
+00:26:19.750
+00:26:22.260
+allow Abd and a CD.
+00:26:22.260
+00:26:25.740
+And then that was what our whole proof
+00:26:26.680
+00:26:28.585
+was showing.
+00:26:28.585
+00:26:29.650
+That's really good.
+00:26:29.650
+00:26:31.565
+That is an algorithm that guarantees
+00:26:31.565
+00:26:34.650
+things converge very quickly.
+00:26:34.650
+00:26:36.330
+We don't care about the details, but
+00:26:37.290
+00:26:39.270
+understanding that those two choices as
+00:26:39.270
+00:26:41.790
+heuristics instead of picking a
+00:26:41.790
+00:26:43.880
+completely random path, greatly improve
+00:26:43.880
+00:26:46.645
+the algorithm.
+00:26:46.645
+00:26:47.500
+Things that would not picking the path
+00:26:47.500
+00:26:50.290
+with the largest single edge.
+00:26:50.290
+00:26:54.060
+It's not necessarily good, right?
+00:26:55.200
+00:26:56.690
+The path ABC D has an edge of 10.
+00:26:57.750
+00:27:02.420
+Picking a path with the longest path,
+00:27:03.760
+00:27:08.430
+clearly bad, et cetera.
+00:27:08.430
+00:27:10.740
+OK.
+00:27:11.580
+00:27:11.960
+So that's really all we had to do on
+00:27:12.890
+00:27:14.410
+flow.
+00:27:14.410
+00:27:15.000
+That's the only amount I want you to
+00:27:15.000
+00:27:16.910
+understand is sort of how to run the
+00:27:16.910
+00:27:18.530
+basic algorithm.
+00:27:18.530
+00:27:20.150
+Why back edges are there, how they're
+00:27:20.150
+00:27:23.340
+used to fix things, and what are good
+00:27:23.340
+00:27:26.000
+heuristics for path choice.
+00:27:26.000
+00:27:27.460
+That's the only things we could ask
+00:27:28.230
+00:27:29.530
+about on their final.
+00:27:29.530
+00:27:31.350
+And finally, Brad talked about Bloom
+00:27:33.870
+00:27:36.348
+filters.
+00:27:36.348
+00:27:36.782
+Bloom filters are super cool and it's
+00:27:36.782
+00:27:39.730
+the first time we've covered them.
+00:27:39.730
+00:27:40.980
+Bloom filters really want to use very
+00:27:42.850
+00:27:46.110
+little space to store a huge amount of
+00:27:46.110
+00:27:48.520
+data.
+00:27:48.520
+00:27:48.940
+And they also want to be very fast.
+00:27:49.740
+00:27:51.550
+And so their idea is kind of well.
+00:27:52.230
+00:27:54.420
+Let's have a hash table.
+00:27:55.220
+00:27:56.530
+But instead of storing all those values
+00:27:57.470
+00:27:59.860
+and things, we're just going to store.
+00:27:59.860
+00:28:02.038
+Is there something here or not, right?
+00:28:02.038
+00:28:04.860
+So what we're storing?
+00:28:04.860
+00:28:06.530
+Either there's something here or there
+00:28:06.530
+00:28:08.871
+is not, so it's true or false.
+00:28:08.871
+00:28:11.320
+And when we insert we go to every hash
+00:28:12.100
+00:28:16.640
+value.
+00:28:16.640
+00:28:17.250
+We take our data and we hash it and we
+00:28:18.570
+00:28:21.069
+set it to one.
+00:28:21.070
+00:28:21.840
+If it's zero, it goes to one.
+00:28:22.620
+00:28:24.153
+If it's one, it goes to 1, right?
+00:28:24.153
+00:28:25.750
+We cannot remove from a basic bloom
+00:28:27.770
+00:28:29.890
+filter because we have no way of
+00:28:29.890
+00:28:32.470
+knowing if that being is that hash
+00:28:32.470
+00:28:35.200
+value is set to 1 because we inserted
+00:28:35.200
+00:28:39.490
+the thing that we want to remove or we
+00:28:39.490
+00:28:41.475
+inserted something else.
+00:28:41.475
+00:28:42.600
+OK.
+00:28:43.790
+00:28:44.400
+So one of the promise when we look at a
+00:28:46.770
+00:28:51.790
+data structure answering a question, a
+00:28:51.790
+00:28:54.722
+data structure has four possible
+00:28:54.722
+00:28:56.680
+outcomes to an answer of a question,
+00:28:56.680
+00:28:58.450
+right?
+00:28:58.450
+00:28:58.940
+It can say yes, this thing is true.
+00:28:58.940
+00:29:01.700
+Here's the answer.
+00:29:01.700
+00:29:03.369
+No, it is false.
+00:29:03.370
+00:29:06.290
+And we are correct.
+00:29:07.020
+00:29:08.190
+It could accidentally say.
+00:29:09.220
+00:29:10.940
+Sure, I've got that information and be
+00:29:10.940
+00:29:13.290
+completely wrong, or it could say.
+00:29:13.290
+00:29:16.670
+That doesn't exist and be completely
+00:29:17.390
+00:29:20.000
+wrong, right?
+00:29:20.000
+00:29:20.810
+These are the four things we can have
+00:29:20.810
+00:29:22.680
+happen.
+00:29:22.680
+00:29:23.100
+If our data structure is not 100%
+00:29:23.780
+00:29:26.400
+correct, which is the case of bloom
+00:29:26.400
+00:29:28.720
+filters, right?
+00:29:28.720
+00:29:29.410
+They can be wrong.
+00:29:29.410
+00:29:30.630
+But one of these bloom filters cannot.
+00:29:31.770
+00:29:34.900
+What is it that cannot be true from a
+00:29:36.110
+00:29:38.220
+bloom filter?
+00:29:38.220
+00:29:38.850
+Yeah.
+00:29:38.850
+00:29:39.320
+A bloom filter cannot have a false
+00:29:41.540
+00:29:44.090
+negative that if I've inserted
+00:29:44.090
+00:29:46.880
+something.
+00:29:46.880
+00:29:47.570
+It is definitely got a one on it right?
+00:29:48.600
+00:29:51.600
+If I have not inserted it.
+00:29:51.600
+00:29:54.160
+It might have a 0, but something else
+00:29:54.950
+00:29:58.560
+might have hashed to that value.
+00:29:58.560
+00:30:00.730
+So we might say, yeah, that's here.
+00:30:00.730
+00:30:02.320
+But we cannot have it not be here.
+00:30:03.870
+00:30:06.110
+So with that information we said, can
+00:30:07.550
+00:30:10.085
+we make bloom filters a little bit more
+00:30:10.085
+00:30:11.920
+accurate?
+00:30:11.920
+00:30:12.430
+And instead of using 1 hash value.
+00:30:13.380
+00:30:15.940
+We're going to use multiple hash
+00:30:17.150
+00:30:19.380
+values, right?
+00:30:19.380
+00:30:20.301
+We're going to hash the thing that we
+00:30:20.301
+00:30:23.080
+want to put in, or check in the bloom
+00:30:23.080
+00:30:25.380
+filter with several different hash
+00:30:25.380
+00:30:27.980
+functions.
+00:30:27.980
+00:30:28.640
+And will check all those locations on
+00:30:29.260
+00:30:32.340
+insert we will set the mall to one and
+00:30:32.340
+00:30:35.357
+on search checking if there we will
+00:30:35.357
+00:30:38.400
+look at all of them.
+00:30:38.400
+00:30:39.906
+If any of them are zero the answer is
+00:30:39.906
+00:30:42.060
+no.
+00:30:42.060
+00:30:42.410
+It's not here, but if they're all one,
+00:30:42.410
+00:30:44.870
+the answer is yes and this improves.
+00:30:44.870
+00:30:48.580
+Our performance in general and it's
+00:30:49.360
+00:30:53.290
+basically banking on this idea that it
+00:30:53.290
+00:30:55.960
+can't have a false negative.
+00:30:55.960
+00:30:59.630
+So.
+00:31:01.480
+00:31:03.930
+This kind of comp incomprehensible
+00:31:05.110
+00:31:07.840
+function, which you don't have to
+00:31:07.840
+00:31:09.460
+memorize, describes the chances.
+00:31:09.460
+00:31:12.640
+Assuming sue haha.
+00:31:13.760
+00:31:15.260
+But what's interesting about it?
+00:31:15.260
+00:31:17.050
+What's interesting, right?
+00:31:17.950
+00:31:19.230
+We have the.
+00:31:19.230
+00:31:21.470
+M is the size of our vector that we're
+00:31:22.600
+00:31:25.830
+storing our bloom filter in.
+00:31:25.830
+00:31:27.300
+K is the number of hash functions.
+00:31:28.090
+00:31:30.770
+And N is the number of things we
+00:31:31.530
+00:31:34.180
+insert, right?
+00:31:34.180
+00:31:35.140
+And what's interesting here is OK, both
+00:31:36.250
+00:31:39.450
+makes this bigger and smaller.
+00:31:39.450
+00:31:42.560
+So as I use more and more hash
+00:31:43.680
+00:31:47.450
+functions, I get more and more accurate
+00:31:47.450
+00:31:50.050
+until kind of I'm filling in the whole
+00:31:50.050
+00:31:52.947
+table, right?
+00:31:52.947
+00:31:53.730
+If I have 100 hash functions and a
+00:31:53.730
+00:31:56.848
+table with only ten locations, I'm just
+00:31:56.848
+00:32:00.190
+going to color the whole table as true.
+00:32:00.190
+00:32:02.350
+The first thing I insert.
+00:32:02.350
+00:32:04.050
+And now I am almost always having false
+00:32:04.990
+00:32:07.830
+negatives or false positives, right?
+00:32:07.830
+00:32:10.310
+Because everything's gonna say it's
+00:32:10.310
+00:32:11.590
+there no problem.
+00:32:11.590
+00:32:12.320
+But if I only have 1 hash function.
+00:32:13.610
+00:32:15.600
+I can end up with the chance of having
+00:32:17.750
+00:32:21.910
+a false.
+00:32:21.910
+00:32:22.700
+A positive is exactly one over the size
+00:32:23.490
+00:32:26.500
+of the table.
+00:32:26.500
+00:32:27.240
+Right, because I assume my hash
+00:32:27.980
+00:32:29.970
+functions are suha.
+00:32:29.970
+00:32:31.040
+So there's this curve we get.
+00:32:32.100
+00:32:33.770
+And what does this mean?
+00:32:34.730
+00:32:35.860
+This means that we reduce that
+00:32:35.860
+00:32:39.750
+complicated mass to this optimal point.
+00:32:39.750
+00:32:43.340
+You don't actually have to memorize
+00:32:44.160
+00:32:45.530
+this function either, but you should
+00:32:45.530
+00:32:46.960
+remember sort of what's going on with
+00:32:46.960
+00:32:48.620
+it that this optimal point says that
+00:32:48.620
+00:32:53.830
+for a given number of keys and a given
+00:32:53.830
+00:32:56.509
+size of.
+00:32:56.510
+00:32:58.040
+Table we have a optimal number of
+00:32:58.920
+00:33:02.264
+insertions for an expected number of
+00:33:02.264
+00:33:05.131
+insertions expected in a given size of
+00:33:05.131
+00:33:08.223
+table.
+00:33:08.223
+00:33:08.537
+We have an optimal number of hash
+00:33:08.537
+00:33:10.710
+functions for a given, number, of,
+00:33:10.710
+00:33:13.539
+etcetera.
+00:33:13.540
+00:33:14.020
+So we can solve for any two of these.
+00:33:14.020
+00:33:16.870
+We can figure out the best choice of
+00:33:16.870
+00:33:18.576
+the third cool.
+00:33:18.576
+00:33:20.540
+When designing your hash function your
+00:33:22.070
+00:33:24.830
+bloom filters you want to base on this
+00:33:24.830
+00:33:27.250
+OK.
+00:33:27.250
+00:33:27.700
+Finally, we talked about one
+00:33:30.300
+00:33:32.260
+improvement over a classical bloom
+00:33:32.260
+00:33:34.455
+filter, which was a counting bloom
+00:33:34.455
+00:33:36.480
+filter.
+00:33:36.480
+00:33:36.850
+And the counting bloom filter.
+00:33:38.020
+00:33:39.375
+We want to be able to ask how many
+00:33:39.375
+00:33:41.400
+different things did we see or how many
+00:33:41.400
+00:33:44.430
+things of this type did we see, right?
+00:33:44.430
+00:33:46.270
+Of this set of things, and this gives
+00:33:47.360
+00:33:51.510
+us some features.
+00:33:51.510
+00:33:52.565
+This says that instead of storing true
+00:33:52.565
+00:33:54.980
+or false, we'll store a count, right.
+00:33:54.980
+00:33:58.590
+This makes it use more space.
+00:33:58.590
+00:34:00.870
+But
+00:34:02.150
+00:34:02.980
+It makes it mean that we have an idea
+00:34:04.510
+00:34:07.580
+of how many different things we saw.
+00:34:07.580
+00:34:09.360
+OK, that seems useful.
+00:34:10.610
+00:34:12.500
+It also allows us to kind of remove,
+00:34:14.490
+00:34:18.100
+right?
+00:34:18.100
+00:34:19.470
+It's not perfect.
+00:34:19.470
+00:34:20.840
+But we now have a way of removing
+00:34:21.560
+00:34:23.880
+because all we're going to do is
+00:34:23.880
+00:34:25.250
+decrement the count if we have put two
+00:34:25.250
+00:34:27.720
+things in that collided.
+00:34:27.720
+00:34:29.140
+And we decrement and we remove one of
+00:34:29.800
+00:34:31.610
+them.
+00:34:31.610
+00:34:31.896
+We decrement the count by 1, and that's
+00:34:31.896
+00:34:34.090
+a reasonable approximation.
+00:34:34.090
+00:34:36.030
+Unfortunately, we then no longer have
+00:34:37.090
+00:34:40.840
+the promise that we cannot have false
+00:34:40.840
+00:34:43.330
+negatives.
+00:34:43.330
+00:34:43.940
+So it's a trade off and it depends on
+00:34:44.750
+00:34:47.050
+your application design.
+00:34:47.050
+00:34:48.600
+What do you want to do?
+00:34:48.600
+00:34:49.970
+There isn't a right answer here, right?
+00:34:49.970
+00:34:52.050
+We can decide one thing or the other.
+00:34:52.740
+00:34:55.110
+But it gives us a useful feature.
+00:34:56.900
+00:34:58.860
+And that's it for what we're going to
+00:34:59.730
+00:35:01.430
+cover on bloom filters.
+00:35:01.430
+00:35:02.690
+We're not going to cover on the sketch
+00:35:03.470
+00:35:06.200
+stuff.
+00:35:06.200
+00:35:06.650
+We felt that there was a little bit too
+00:35:07.330
+00:35:09.060
+much probability and we didn't give
+00:35:09.060
+00:35:10.490
+enough background to test that.
+00:35:10.490
+00:35:12.150
+But even with it's a cool application
+00:35:12.950
+00:35:15.830
+that has some really interesting ideas.
+00:35:15.830
+00:35:17.740
+So as I said, I'll put this link up,
+00:35:19.080
+00:35:21.860
+but the last thing I wanna play is what
+00:35:21.860
+00:35:24.945
+this little bit that a.
+00:35:24.945
+00:35:27.270
+Past TA did that.
+00:35:27.960
+00:35:30.810
+I think is amazing.
+00:35:32.370
+00:35:34.340
+He was a grad student when I was still
+00:35:39.110
+00:35:40.460
+a grad student, so.
+00:35:40.460
+00:35:41.320
+Heads up, our final is coming soon.
+00:35:45.560
+00:35:48.066
+1/3 of your entire grade.
+00:35:48.066
+00:35:50.950
+It's really important.
+00:35:50.950
+00:35:52.660
+We are here to help you study.
+00:35:52.660
+00:35:55.220
+So let's go over hashing first, then
+00:35:55.220
+00:35:57.990
+arrange with the hash function.
+00:35:57.990
+00:35:59.810
+H deterministic fall for should be all
+00:35:59.810
+00:36:04.124
+of one.
+00:36:04.124
+00:36:04.992
+You should remember Sue haha.
+00:36:04.992
+00:36:07.300
+Uniform distribution.
+00:36:09.770
+00:36:12.340
+Visions 1-2 keys hash into the same
+00:36:19.290
+00:36:22.900
+spot.
+00:36:22.900
+00:36:23.400
+Separate chaining makes all this stuff
+00:36:28.670
+00:36:31.175
+all your room.
+00:36:31.175
+00:36:32.340
+You must free hash items may not go to
+00:36:34.830
+00:36:37.770
+the same place that they were before
+00:36:37.770
+00:36:40.610
+and that is hashing.
+00:36:40.610
+00:36:43.290
+Let's move on.
+00:36:43.290
+00:36:44.370
+Thanks.
+00:36:50.590
+00:36:51.170
+Heaps the priority queues Intertan move
+00:36:54.090
+00:36:57.657
+our log in time from route to the
+00:36:57.657
+00:37:00.470
+leaves is always increasing.
+00:37:00.470
+00:37:03.960
+There are we stopping our and log in
+00:37:03.960
+00:37:07.980
+one is over then so make sure these is
+00:37:07.980
+00:37:12.220
+clear they fest this joint sets also
+00:37:12.220
+00:37:15.270
+might be.
+00:37:15.270
+00:37:16.070
+So let's see.
+00:37:19.890
+00:37:20.930
+OK, start out at minus one and merge if
+00:37:22.910
+00:37:26.370
+they are not in nothing that so
+00:37:26.370
+00:37:29.380
+carefully.
+00:37:29.380
+00:37:31.200
+Union by height.
+00:37:33.440
+00:37:34.550
+You can be union by size and if you do
+00:37:34.550
+00:37:38.240
+it right, three efficiency will be
+00:37:38.240
+00:37:40.830
+maximized.
+00:37:40.830
+00:37:41.830
+You should use path compression, it
+00:37:41.830
+00:37:43.965
+gets you up the constant time your tree
+00:37:43.965
+00:37:47.740
+gets shorter with every single call to
+00:37:47.740
+00:37:50.610
+find and just like that made amazed
+00:37:50.610
+00:37:54.510
+figure it out, disjoint sets and all
+00:37:54.510
+00:37:56.560
+your MP seven days.
+00:37:56.560
+00:37:58.800
+Therefore, we're moving on to graphs.
+00:37:59.680
+00:38:02.740
+Questions are about weighted wraps.
+00:38:24.450
+00:38:27.540
+These kids get their own swimming pool.
+00:38:27.540
+00:38:30.620
+You can use cross schools and door
+00:38:30.620
+00:38:32.890
+Prins.
+00:38:32.890
+00:38:33.360
+It doesn't matter which one.
+00:38:33.360
+00:38:35.830
+They both create a tree with small this
+00:38:35.830
+00:38:38.520
+total weight.
+00:38:38.520
+00:38:40.070
+You'd better and hold the difference
+00:38:40.820
+00:38:42.690
+between our B&amp;D DFS and which
+00:38:42.690
+00:38:46.600
+implementation will suit your graph.
+00:38:46.600
+00:38:49.173
+The best adjacency matrix sore list,
+00:38:49.173
+00:38:53.070
+which one will make your graph run the
+00:38:53.070
+00:38:55.020
+fastest without any tricks?
+00:38:55.020
+00:38:57.420
+Which is n + m plus up if you want the
+00:38:58.350
+00:39:01.930
+shortest path from S2 N, like through
+00:39:01.930
+00:39:05.970
+the algorithm is surely the way to go.
+00:39:05.970
+00:39:09.700
+Need to get this tree is to have all
+00:39:11.060
+00:39:13.760
+your graph edges being weighted
+00:39:13.760
+00:39:15.570
+positively.
+00:39:15.570
+00:39:16.700
+And that's all I've got.
+00:39:17.730
+00:39:21.310
+Good luck on your exam.
+00:39:21.860
+00:39:23.480
