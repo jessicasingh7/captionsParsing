@@ -1,4 +1,7 @@
 import webvtt
+
+import json
+import os
 from collections import defaultdict
 
 file_name = "1_1x0b27pk-en_US.vtt"
@@ -30,3 +33,4 @@ for cand in cands:
         if content["displayOnPlayer"]:
             end = content["mediaId"]
             break
+print(end)
