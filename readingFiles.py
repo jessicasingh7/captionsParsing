@@ -1,4 +1,5 @@
 import json
+<<<<<<< HEAD
 import os
  
 # Get the list of all files and directories
@@ -16,3 +17,8 @@ for file in files:
             captionsBeingDisplayed = file
         
 print(captionsBeingDisplayed)
+=======
+with open("testFiles/0_247k9qz7-0_34d7z15g-meta.json") as json_file:
+    metadata = json.load(json_file)
+    print(metadata)
+>>>>>>> cb6c151 (vtt parsing)
