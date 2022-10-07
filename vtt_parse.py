@@ -13,7 +13,7 @@ ct_dictionary = defaultdict(int)
 f = open("CT.txt", "w")
 def conv_time(time):
     hour, minute, second = time.split(":")
-    print(hour, minute, second)
+    # print(hour, minute, second)
     hour = int(float(hour) * 3600 * 1000)
     minute = int(float(minute) * 60 * 1000)
     second = int(float(second) * 1000)
@@ -51,7 +51,7 @@ for cand in cands:
     with open(cand) as json_file:
         content = json.load(json_file)
         if content["displayOnPlayer"]:
-            print(content)
+            # print(content)
             suffix = content["captionId"]
             break
 active_file = file_name.split('-')[0] + "-" + suffix + "-captions.json"
@@ -61,7 +61,7 @@ with open(active_file) as json_file:
     content = json.load(json_file)
 content = list(content["objects"])
 
-dres_dictionary = defaultdict()
+dres_dictionary = defaultdict(int)
 
 for lines in content:
     if("content" in lines):
@@ -74,17 +74,28 @@ for lines in content:
         f.write("\n")
         f.write(str(lines["endTime"]))
         f.write("\n")
-        for words in lines["content"][0]["text"]:
+        for words in lines["content"][0]["text"].split():
             try: 
+                # print("added")
                 dres_dictionary[words] += 1
             except:
                 KeyError("keyword error")
 f.close()
-print("done")
+# print("done")
 
+# print(dres_dictionary)
+# print(ct_dictionary)
 
-print(dres_dictionary)
-print(ct_dictionary)
-# def checkFreq():
-#     for key, values in ct_dictionary.items():
-#         if key 
+def checkFreq():
+    errors = 0
+    for key, values in ct_dictionary.items():
+        if key in dres_dictionary:
+            # print("found")
+            errors += abs(dres_dictionary[key] - ct_dictionary[key])
+        else:
+            # print("not found")
+            errors += ct_dictionary[key]
+    total_words = sum(ct_dictionary.values())
+    return errors / total_words
+
+print(checkFreq())
