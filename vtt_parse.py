@@ -14,9 +14,9 @@ f = open("CT.txt", "w")
 def conv_time(time):
     hour, minute, second = time.split(":")
     print(hour, minute, second)
-    hour = int(hour * 3600 * 1000)
-    minute = int(minute * 60 * 1000)
-    second = int(second * 1000)
+    hour = int(float(hour) * 3600 * 1000)
+    minute = int(float(minute) * 60 * 1000)
+    second = int(float(second) * 1000)
     # print(hour, minute, second)
     converted = second + minute + hour
     return str(float(converted) * 1000)
@@ -72,9 +72,13 @@ for lines in content:
         f.write(str(lines["endTime"]))
         f.write("\n")
         for words in lines["content"][0]["text"]:
-            dres_dictionary += 1
+            dres_dictionary[words] += 1
 f.close()
 print("done")
 
-def checkFreq():
-    
+
+print(dres_dictionary)
+print(ct_dictionary)
+# def checkFreq():
+#     for key, values in ct_dictionary.items():
+#         if key 
